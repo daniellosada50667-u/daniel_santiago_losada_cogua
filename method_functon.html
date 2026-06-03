@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad: ¿Función o Método?</title>
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #0284c7;
+            --primary-light: #e0f2fe;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --error: #dc2626;
+            --error-light: #fee2e2;
+            --border-color: #cbd5e1;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
+        .explicacion {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .panel-fuente {
+            width: 100%;
+            max-width: 850px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .panel-fuente h3 {
+            margin: 0 0 15px 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .items-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Fichas de casos de uso */
+        .draggable {
+            background-color: var(--bg-card);
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: grab;
+            border: 2px solid var(--border-color);
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .draggable:hover {
+            border-color: var(--primary);
+            background-color: #fafafa;
+            transform: translateY(-1px);
+        }
+
+        .draggable .titulo-caso {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1rem;
+        }
+
+        .draggable .descripcion-caso {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .draggable.dragging {
+            opacity: 0.4;
+        }
+
+        /* Columnas de destino */
+        .columnas-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            width: 100%;
+            max-width: 850px;
+            margin-bottom: 30px;
+        }
+
+        .columna-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .columna-card h2 {
+            text-align: center;
+            margin: 0 0 15px 0;
+            font-size: 1.2rem;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .col-funcion h2 {
+            color: #0369a1;
+            background: #e0f2fe;
+        }
+
+        .col-metodo h2 {
+            color: #6d28d9;
+            background: #f3e8ff;
+        }
+
+        .zona-drop {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            min-height: 250px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .zona-drop.drag-over {
+            background-color: #f0fdf4;
+            border-color: var(--success);
+        }
+
+        /* Estados de validación */
+        .draggable.correcto {
+            background-color: var(--success-light) !important;
+            border-color: var(--success) !important;
+        }
+        .draggable.correcto .titulo-caso { color: #166534; }
+
+        .draggable.incorrecto {
+            background-color: var(--error-light) !important;
+            border-color: var(--error) !important;
+            animation: shake 0.35s ease-in-out;
+        }
+        .draggable.incorrecto .titulo-caso { color: #991b1b; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+
+        .btn-verificar {
+            padding: 14px 40px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: white;
+            background-color: #0f172a;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-verificar:hover {
+            background-color: #1e293b;
+        }
+
+        #resultado {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Actividad: ¿Función o Método?</h1>
+        <p class="instrucciones">Arrastra cada caso de uso al contenedor correcto dependiendo de si requiere una función matemática/utilitaria aislada o una acción propia de un objeto.</p>
+    </header>
+
+    <div class="explicacion">
+        💡 <b>Recordatorio rápido para el alumno:</b><br>
+        • Usa una <b>Función</b> si solo necesitas procesar unos datos de entrada y obtener un resultado sin alterar a nadie.<br>
+        • Usa un <b>Método</b> si la acción pertenece intrínsecamente a un objeto (ej. una cuenta, un videojuego, un auto) o si modifica sus propiedades internas.
+    </div>
+
+    <div class="panel-fuente">
+        <h3>Casos de Uso del Mundo Real</h3>
+        <div class="items-container" id="bag">
+            
+            <div class="draggable" draggable="true" data-tipo="funcion">
+                <span class="titulo-caso">Calcular el IVA (Impuesto)</span>
+                <span class="descripcion-caso">Recibe un precio numérico, lo multiplica por 0.19 y retorna el valor del impuesto. No depende de ningún objeto.</span>
+            </div>
+
+            <div class="draggable" draggable="true" data-tipo="metodo">
+                <span class="titulo-caso">Subir el volumen de un SmartTV</span>
+                <span class="descripcion-caso">Modifica directamente la propiedad interna 'volumenActual' de un televisor específico aumentándola en +1.</span>
+            </div>
+
+            <div class="draggable" draggable="true" data-tipo="funcion">
+                <span class="titulo-caso">Convertir Celcius a Fahrenheit</span>
+                <span class="descripcion-caso">Una fórmula matemática pura. Recibe un número de grados, aplica la conversión y devuelve el resultado.</span>
+            </div>
+
+            <div class="draggable" draggable="true" data-tipo="metodo">
+                <span class="titulo-caso">Añadir una canción a una Playlist</span>
+                <span class="descripcion-caso">Altera la lista interna de canciones que pertenece al objeto 'MiPlaylistFavorita'.</span>
+            </div>
+
+            <div class="draggable" draggable="true" data-tipo="funcion">
+                <span class="titulo-slate titulo-caso">Calcular la distancia entre dos puntos</span>
+                <span class="descripcion-caso">Recibe las coordenadas (x1, y1) y (x2, y2), aplica el teorema de Pitágoras y devuelve la distancia.</span>
+            </div>
+
+            <div class="draggable" draggable="true" data-tipo="metodo">
+                <span class="titulo-caso">Gastar cartuchos en una impresora</span>
+                <span class="descripcion-caso">Resta unidades del atributo 'nivelDeTinta' que pertenece a la impresora conectada.</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="columnas-grid">
+        <div class="columna-card col-funcion">
+            <h2>Debería ser una Función</h2>
+            <div class="zona-drop" data-tipo="funcion"></div>
+        </div>
+
+        <div class="columna-card col-metodo">
+            <h2>Debería ser un Método</h2>
+            <div class="zona-drop" data-tipo="metodo"></div>
+        </div>
+    </div>
+
+    <button class="btn-verificar" onclick="verificarRespuestas()">Comprobar Respuestas</button>
+    <div id="resultado"></div>
+
+    <script>
+        const draggables = document.querySelectorAll('.draggable');
+        const zonas = document.querySelectorAll('.zona-drop');
+
+        // Desordenar los casos al cargar
+        const bag = document.getElementById('bag');
+        for (let i = bag.children.length; i >= 0; i--) {
+            bag.appendChild(bag.children[Math.random() * i | 0]);
+        }
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => draggable.classList.add('dragging'));
+            draggable.addEventListener('dragend', () => draggable.classList.remove('dragging'));
+        });
+
+        zonas.forEach(zona => {
+            zona.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zona.classList.add('drag-over');
+            });
+
+            zona.addEventListener('dragleave', () => zona.classList.remove('drag-over'));
+
+            zona.addEventListener('drop', () => {
+                zona.classList.remove('drag-over');
+                const elemento = document.querySelector('.dragging');
+                if (elemento) {
+                    zona.appendChild(elemento);
+                    elemento.classList.remove('correcto', 'incorrecto');
+                }
+            });
+        });
+
+        function verificarRespuestas() {
+            let correctas = 0;
+            let totales = draggables.length;
+            let pendientes = 0;
+
+            draggables.forEach(item => {
+                const padre = item.parentElement;
+                if (padre.id === 'bag') {
+                    pendientes++;
+                    item.classList.remove('correcto', 'incorrecto');
+                    return;
+                }
+
+                const destino = padre.getAttribute('data-tipo');
+                const correcto = item.getAttribute('data-tipo');
+
+                if (destino === correcto) {
+                    item.classList.add('correcto');
+                    item.classList.remove('incorrecto');
+                    correctas++;
+                } else {
+                    item.classList.add('incorrecto');
+                    item.classList.remove('correcto');
+                }
+            });
+
+            const res = document.getElementById('resultado');
+            if (pendientes > 0) {
+                res.innerHTML = `⚠️ Aún quedan ${pendientes} casos sin clasificar.`;
+                res.style.color = '#b45309';
+            } else if (correctas === totales) {
+                res.innerHTML = `🎉 ¡Excelente! Has identificado perfectamente cuándo usar funciones aisladas y cuándo métodos orientados a objetos.`;
+                res.style.color = 'var(--success)';
+            } else {
+                res.innerHTML = `❌ Algunas clasificaciones no son correctas. Revisa los bloques en rojo (${correctas}/${totales} bien).`;
+                res.style.color = 'var(--error)';
+            }
+        }
+    </script>
+</body>
+</html>

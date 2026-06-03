@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad POO: Atributos y Métodos</title>
+    <style>
+        :root {
+            --bg-page: #f0f4f8;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --error: #ef4444;
+            --error-light: #fee2e2;
+            --border-color: #e2e8f0;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            max-width: 650px;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #0f172a;
+            margin: 0 0 12px 0;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        p.instrucciones {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Contenedor principal de bloques sueltos */
+        .panel-fuente {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            margin-bottom: 35px;
+        }
+
+        .panel-fuente h3 {
+            margin: 0 0 16px 0;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            min-height: 60px;
+            align-items: center;
+        }
+
+        /* Estilo de las tarjetas arrastrables */
+        .draggable {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            padding: 10px 18px;
+            border-radius: 9999px;
+            cursor: grab;
+            font-weight: 600;
+            font-size: 0.9rem;
+            user-select: none;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .draggable:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+        }
+
+        .draggable:active {
+            cursor: grabbing;
+        }
+
+        .draggable.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        /* Cuadrícula de Clases */
+        .clases-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .clase-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .clase-card h2 {
+            text-align: center;
+            margin: 0 0 20px 0;
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-weight: 700;
+            background: var(--primary-light);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        /* Zonas de depósito (Atributos y Métodos) */
+        .sub-zona {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            min-height: 140px;
+            margin-top: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .sub-zona h3 {
+            margin: 0 0 8px 0;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .sub-zona.drag-over {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            border-style: solid;
+        }
+
+        /* Dentro de las zonas, los elementos pierden los bordes redondeados infinitos para verse ordenados */
+        .sub-zona .draggable {
+            border-radius: 8px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Estados de Validación */
+        .draggable.correcto {
+            background-color: var(--success-light);
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        .draggable.incorrecto {
+            background-color: var(--error-light);
+            border-color: var(--error);
+            color: #991b1b;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+
+        /* Botón y Resultados */
+        .footer-actions {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-verificar {
+            padding: 14px 40px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-verificar:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-verificar:active {
+            transform: translateY(1px);
+        }
+
+        #resultado {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            min-height: 27px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Desafío de Programación Orientada a Objetos</h1>
+        <p class="instrucciones">Determina a qué clase pertenece cada elemento y clasifícalo correctamente como un <b>Atributo</b> (estado) o un <b>Método</b> (comportamiento).</p>
+    </header>
+
+    <div class="panel-fuente">
+        <h3>Elementos por Clasificar</h3>
+        <div class="items-container" id="bag">
+            <div class="draggable" draggable="true" data-clase="videojuego" data-tipo="atributo">genero : String</div>
+            <div class="draggable" draggable="true" data-clase="videojuego" data-tipo="atributo">puntuacionMaxima : Int</div>
+            <div class="draggable" draggable="true" data-clase="videojuego" data-tipo="atributo">titulo : String</div>
+            <div class="draggable" draggable="true" data-clase="videojuego" data-tipo="metodo">iniciarPartida()</div>
+            <div class="draggable" draggable="true" data-clase="videojuego" data-tipo="metodo">guardarProgreso()</div>
+
+            <div class="draggable" draggable="true" data-clase="banco" data-tipo="atributo">numeroCuenta : String</div>
+            <div class="draggable" draggable="true" data-clase="banco" data-tipo="atributo">saldo : Double</div>
+            <div class="draggable" draggable="true" data-clase="banco" data-tipo="metodo">depositar(monto)</div>
+            <div class="draggable" draggable="true" data-clase="banco" data-tipo="metodo">retirar(monto)</div>
+
+            <div class="draggable" draggable="true" data-clase="cafetera" data-tipo="atributo">nivelAgua : Int</div>
+            <div class="draggable" draggable="true" data-clase="cafetera" data-tipo="atributo">temperatura : Int</div>
+            <div class="draggable" draggable="true" data-clase="cafetera" data-tipo="metodo">calentarAgua()</div>
+            <div class="draggable" draggable="true" data-clase="cafetera" data-tipo="metodo">servirTaza()</div>
+        </div>
+    </div>
+
+    <div class="clases-grid">
+        
+        <div class="clase-card">
+            <h2>class Videojuego</h2>
+            <div class="sub-zona" data-clase="videojuego" data-tipo="atributo">
+                <h3>Atributos</h3>
+            </div>
+            <div class="sub-zona" data-clase="videojuego" data-tipo="metodo">
+                <h3>Métodos</h3>
+            </div>
+        </div>
+
+        <div class="clase-card">
+            <h2>class CuentaBancaria</h2>
+            <div class="sub-zona" data-clase="banco" data-tipo="atributo">
+                <h3>Atributos</h3>
+            </div>
+            <div class="sub-zona" data-clase="banco" data-tipo="metodo">
+                <h3>Métodos</h3>
+            </div>
+        </div>
+
+        <div class="clase-card">
+            <h2>class CafeteraDigital</h2>
+            <div class="sub-zona" data-clase="cafetera" data-tipo="atributo">
+                <h3>Atributos</h3>
+            </div>
+            <div class="sub-zona" data-clase="cafetera" data-tipo="metodo">
+                <h3>Métodos</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-actions">
+        <button class="btn-verificar" onclick="verificarRespuestas()">Validar Ejercicio</button>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        const draggables = document.querySelectorAll('.draggable');
+        const zonas = document.querySelectorAll('.sub-zona');
+
+        // Mezclar aleatoriamente los elementos al cargar la página
+        const bag = document.getElementById('bag');
+        for (let i = bag.children.length; i >= 0; i--) {
+            bag.appendChild(bag.children[Math.random() * i | 0]);
+        }
+
+        // Eventos de arrastre (Drag)
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        // Eventos de destino (Drop)
+        zonas.forEach(zona => {
+            zona.addEventListener('dragover', (e) => {
+                e.preventDefault(); 
+                zona.classList.add('drag-over');
+            });
+
+            zona.addEventListener('dragleave', () => {
+                zona.classList.remove('drag-over');
+            });
+
+            zona.addEventListener('drop', () => {
+                zona.classList.remove('drag-over');
+                const elementoArrastrado = document.querySelector('.dragging');
+                if (elementoArrastrado) {
+                    zona.appendChild(elementoArrastrado);
+                    // Resetear estados visuales anteriores al mover
+                    elementoArrastrado.classList.remove('correcto', 'incorrecto');
+                }
+            });
+        });
+
+        // Validación de respuestas
+        function verificarRespuestas() {
+            let correctas = 0;
+            let totales = draggables.length;
+            let pendientes = 0;
+
+            draggables.forEach(item => {
+                const contenedorPadre = item.parentElement;
+                
+                if (contenedorPadre.id === 'bag') {
+                    pendientes++;
+                    item.classList.remove('correcto', 'incorrecto');
+                    return;
+                }
+
+                const claseDestino = contenedorPadre.getAttribute('data-clase');
+                const tipoDestino = contenedorPadre.getAttribute('data-tipo');
+                const claseCorrecta = item.getAttribute('data-clase');
+                const tipoCorrecto = item.getAttribute('data-tipo');
+
+                if (claseDestino === claseCorrecta && tipoDestino === tipoCorrecto) {
+                    item.classList.add('correcto');
+                    item.classList.remove('incorrecto');
+                    correctas++;
+                } else {
+                    item.classList.add('incorrecto');
+                    item.classList.remove('correcto');
+                }
+            });
+
+            const resultadoDiv = document.getElementById('resultado');
+            if (pendientes > 0) {
+                resultadoDiv.innerHTML = `⚠️ Quedan ${pendientes} elementos sin clasificar en el panel superior.`;
+                resultadoDiv.style.color = '#d97706';
+            } else if (correctas === totales) {
+                resultadoDiv.innerHTML = `🎉 ¡Perfecto! Todo está clasificado correctamente (${correctas}/${totales}).`;
+                resultadoDiv.style.color = 'var(--success)';
+            } else {
+                resultadoDiv.innerHTML = `❌ Hay errores en la estructura. Revisa las fichas marcadas en rojo (${correctas}/${totales} correctas).`;
+                resultadoDiv.style.color = 'var(--error)';
+            }
+        }
+    </script>
+</body>
+</html>
