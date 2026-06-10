@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"/Users/yanethmejia/Documents/Universidades/UdeCaldas/I - 2026/Fundamentos de Programación/Tema 4/MetodosYFunciones\" status)",
+      "Bash(git -C \"/Users/yanethmejia/Documents/Universidades/UdeCaldas/I - 2026/Fundamentos de Programación/Tema 4/MetodosYFunciones\" log --oneline -5)",
+      "Bash(git -C \"/Users/yanethmejia/Documents/Universidades/UdeCaldas/I - 2026/Fundamentos de Programación/Tema 4/MetodosYFunciones\" ls-files)",
+      "Bash(git -C \"/Users/yanethmejia/Documents/Universidades/UdeCaldas/I - 2026/Fundamentos de Programación/Tema 4/MetodosYFunciones\" rm --cached -r src/)",
+      "Bash(git -C \"/Users/yanethmejia/Documents/Universidades/UdeCaldas/I - 2026/Fundamentos de Programación/Tema 4/MetodosYFunciones\" add .gitignore)",
+      "Bash(git -C '/Users/yanethmejia/Documents/Universidades/UdeCaldas/I - 2026/Fundamentos de Programación/Tema 4/MetodosYFunciones' commit -m ' *)"
+    ]
+  }
+}

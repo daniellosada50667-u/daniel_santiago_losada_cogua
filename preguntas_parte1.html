@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller Interactivo Completo: Dominio de Arrays en Java</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --bg4: #21262d;
+    --border: #30363d;
+    --border2: #3d444d;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --blue: #388bfd;
+    --blue-bg: #1f3358;
+    --blue-text: #79c0ff;
+    --amber: #d29922;
+    --amber-bg: #341a00;
+    --amber-text: #e3b341;
+    --green: #3fb950;
+    --green-bg: #1a2d1a;
+    --green-text: #7ee787;
+    --red: #f85149;
+    --red-bg: #300a0a;
+    --red-text: #ffa198;
+    --purple: #a371f7;
+    --purple-bg: #2a1f44;
+    --purple-text: #d2a8ff;
+    --teal: #2ea8a8;
+    --teal-text: #39d3d3;
+    --font-code: 'JetBrains Mono', monospace;
+    --font-ui: 'Syne', sans-serif;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --transition: .18s cubic-bezier(.4,0,.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 61px;
+  }
+  .header-badge {
+    background: var(--blue-bg);
+    color: var(--blue-text);
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--blue);
+    letter-spacing: .05em;
+  }
+  .header-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-left: auto;
+    font-family: var(--font-code);
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: flex;
+    height: calc(100vh - 61px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .sidebar-section {
+    font-family: var(--font-code);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .1em;
+    padding: 14px 18px 4px;
+    text-transform: uppercase;
+    border-top: 1px solid dashed var(--border);
+  }
+  .sidebar-section:first-child { border-top: none; padding-top: 4px; }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 18px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    color: var(--muted);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition);
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { color: var(--text); background: var(--bg3); }
+  .nav-item.active {
+    color: var(--blue-text);
+    background: var(--blue-bg);
+    border-left-color: var(--blue);
+  }
+  .nav-num {
+    font-family: var(--font-code);
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--bg4);
+    color: var(--muted);
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-item.active .nav-num {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn 0.25s ease-out; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .panel-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* QUIZ CONTAINER */
+  .question-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .question-text {
+    font-size: 15.5px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  
+  /* OPTIONS STYLING */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .option-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: var(--transition);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .option-card:hover {
+    border-color: var(--blue);
+    background: var(--bg4);
+  }
+  .option-radio {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: var(--transition);
+    background: transparent;
+  }
+  
+  /* FEEDBACK INTERACTIVO */
+  .option-card.correct {
+    background: var(--green-bg) !important;
+    border-color: var(--green) !important;
+    color: var(--green-text) !important;
+  }
+  .option-card.correct .option-radio {
+    border-color: var(--green) !important;
+    background: var(--green) !important;
+    box-shadow: inset 0 0 0 3px var(--green-bg);
+  }
+  .option-card.incorrect {
+    background: var(--red-bg) !important;
+    border-color: var(--red) !important;
+    color: var(--red-text) !important;
+  }
+  .option-card.incorrect .option-radio {
+    border-color: var(--red) !important;
+    background: var(--red) !important;
+    box-shadow: inset 0 0 0 3px var(--red-bg);
+  }
+
+  /* CODE BLOCKS FORMATEADOS */
+  .code-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-family: var(--font-code);
+    font-size: 13px;
+    line-height: 1.65;
+    overflow-x: auto;
+    margin: 16px 0;
+    color: var(--text);
+    white-space: pre;
+  }
+  .code-block .kw  { color: #ff7b72; font-weight: 500; }
+  .code-block .ty  { color: var(--teal-text); }
+  .code-block .num { color: var(--amber-text); }
+  .code-block .str { color: var(--green-text); }
+  .code-block .cm  { color: var(--muted); font-style: italic; }
+  .code-block .hl  { background: var(--blue-bg); padding: 2px 4px; border-radius: 4px; color: var(--blue-text); border: 1px solid rgba(56, 139, 253, 0.4); }
+
+  /* ALERTAS / MENSAJES */
+  .info-box {
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    border-left: 4px solid;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-top: 16px;
+    display: none;
+    font-family: var(--font-ui);
+  }
+  .info-box strong { font-family: var(--font-code); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-right: 4px;}
+  .info-box.amber { background: var(--amber-bg);  border-color: var(--amber);  color: var(--amber-text); }
+  .info-box.green { background: var(--green-bg);  border-color: var(--green);  color: var(--green-text); }
+  .info-box.red   { background: var(--red-bg);    border-color: var(--red);    color: var(--red-text); }
+
+  /* BOTONES */
+  .btn {
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    background: var(--bg4);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .btn:hover { background: #30363d; border-color: var(--muted); color: var(--text); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-badge">EVALUACIÓN</span>
+  <span class="header-title">Taller de Diagnóstico: Fundamentos Avanzados de Arrays</span>
+  <span class="header-sub">Requisito para Estructuras Bidimensionales</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">Conceptos Base</div>
+    <button class="nav-item active" onclick="show('q1', this)"><span class="nav-num">1</span> Límites de Rangos</button>
+    <button class="nav-item" onclick="show('q2', this)"><span class="nav-num">2</span> Último Elemento</button>
+    <button class="nav-item" onclick="show('q3', this)"><span class="nav-num">3</span> Límites en Bucles</button>
+    <button class="nav-item" onclick="show('q4', this)"><span class="nav-num">4</span> Mecánica For-Each</button>
+    <button class="nav-item" onclick="show('q5', this)"><span class="nav-num">5</span> Arrays Vacíos</button>
+    <button class="nav-item" onclick="show('q6', this)"><span class="nav-num">6</span> Inmutabilidad</button>
+    <button class="nav-item" onclick="show('q7', this)"><span class="nav-num">7</span> Defectos en Objetos</button>
+    <button class="nav-item" onclick="show('q8', this)"><span class="nav-num">8</span> Reasignación Física</button>
+    <button class="nav-item" onclick="show('q9', this)"><span class="nav-num">9</span> Indexación Anidada</button>
+    <button class="nav-item" onclick="show('q10', this)"><span class="nav-num">10</span> Defectos Primitivos</button>
+    
+    <div class="sidebar-section">Retos de Lógica Algorítmica</div>
+    <button class="nav-item" onclick="show('q11', this)"><span class="nav-num">11</span> Inversión In-Place</button>
+    <button class="nav-item" onclick="show('q12', this)"><span class="nav-num">12</span> Dos Punteros</button>
+    <button class="nav-item" onclick="show('q13', this)"><span class="nav-num">13</span> Desplazamiento</button>
+    <button class="nav-item" onclick="show('q14', this)"><span class="nav-num">14</span> Frecuencias Hashing</button>
+    <button class="nav-item" onclick="show('q15', this)"><span class="nav-num">15</span> Traza de Ordenación</button>
+  </nav>
+
+  <main class="main">
+
+    <div id="q1" class="panel active">
+      <div class="panel-title">Pregunta 1: Límites y Rangos de Memoria</div>
+      <div class="question-box">
+        <p class="question-text">Dado el array definido como <code style="color:var(--purple-text)">int[] calificaciones = new int[6];</code>, ¿cuál es el rango de índices válidos que los estudiantes pueden utilizar para acceder a las celdas sin generar un error en tiempo de ejecución?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q1', 0, true, 'En Java, los índices de un array son de base cero, por lo que un array de tamaño N tiene posiciones válidas desde 0 hasta N-1.', this)">
+            <div class="option-radio"></div><span>De 0 a 5</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q1', 1, false, 'Iniciar en 1 causaría la pérdida del primer elemento en la posición 0, y acceder al índice 6 provocaría un error de desbordamiento.', this)">
+            <div class="option-radio"></div><span>De 1 a 6</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q1', 2, false, 'Aunque el tamaño es 6, el índice 6 representa la séptima posición, la cual no existe y arroja una excepción.', this)">
+            <div class="option-radio"></div><span>De 0 a 6</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q1', 3, false, 'Java no admite la indexación negativa en los arrays convencionales; el índice -1 es siempre inválido.', this)">
+            <div class="option-radio"></div><span>De -1 a 5</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint1')">Ver Pista</button>
+        <div id="hint1" class="info-box amber"><strong>[PISTA]</strong> Recuerda que el conteo en programación empieza en una posición específica y el total de elementos limita el último casillero disponible.</div>
+        <div id="fb-q1" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q2" class="panel">
+      <div class="panel-title">Pregunta 2: Acceso Dinámico Estricto</div>
+      <div class="question-box">
+        <p class="question-text">Imagina que tienes un array llamado <code>precios</code> con múltiples datos guardados. ¿Cuál es la forma correcta y genérica en Java de acceder al último elemento de este array sin importar cuántos elementos tenga en total?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q2', 0, false, 'La propiedad length indica la cantidad total de celdas; intentar usar este número directo como índice causará un error por estar fuera de límites.', this)">
+            <div class="option-radio"></div><span>precios[precios.length]</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q2', 1, true, 'Dado que las posiciones inician en 0, la última celda disponible siempre se ubica exactamente en el tamaño total menos uno.', this)">
+            <div class="option-radio"></div><span>precios[precios.length - 1]</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q2', 2, false, 'Los arrays nativos en Java no cuentan con un método integrado llamado .last(), son estructuras estáticas sencillas.', this)">
+            <div class="option-radio"></div><span>precios.last()</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q2', 3, false, 'A menos que exista una variable entera declarada explícitamente con ese nombre, \'ultimo\' no es una palabra clave reservada para arrays.', this)">
+            <div class="option-radio"></div><span>precios[ultimo]</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint2')">Ver Pista</button>
+        <div id="hint2" class="info-box amber"><strong>[PISTA]</strong> Piensa en la relación matemática exacta entre el tamaño total (length) y el índice del casillero final cuando iniciamos desde cero.</div>
+        <div id="fb-q2" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q3" class="panel">
+      <div class="panel-title">Pregunta 3: Análisis de Límites en Bucles</div>
+      <div class="question-box">
+        <p class="question-text">Un estudiante escribe el siguiente código para mostrar todos los elementos de un array:</p>
+        <div class="code-block"><span class="kw">int</span>[] datos = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>};
+<span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt;= datos.length; i++) {
+    System.out.println(datos[i]);
+}</div>
+        <p class="question-text">¿Qué sucederá exactamente al ejecutar este fragmento de código?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q3', 0, false, 'El ciclo intenta ir más allá de los límites válidos del array debido al operador de comparación utilizado.', this)">
+            <div class="option-radio"></div><span>Se imprimirán los números 10, 20, 30 y luego el programa terminará con éxito.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q3', 1, false, 'El código es sintácticamente correcto para el compilador; el problema se manifiesta únicamente cuando el programa corre en tiempo de ejecución.', this)">
+            <div class="option-radio"></div><span>El código arrojará un error de compilación en la línea del ciclo for.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q3', 2, true, 'El ciclo recorre correctamente los índices 0, 1 y 2, pero al evaluar i=3 (que es igual a datos.length), la condición se cumple e intenta acceder a una posición inexistente.', this)">
+            <div class="option-radio"></div><span>Se imprimirán los números 10, 20, 30 y de inmediato se lanzará una excepción ArrayIndexOutOfBoundsException.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q3', 3, false, 'La variable i se incrementa de forma constante en cada paso, por lo que el ciclo tiene una condición de salida definida, aunque incorrecta.', this)">
+            <div class="option-radio"></div><span>El ciclo se convertirá en un bucle infinito que nunca se detendrá.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint3')">Ver Pista</button>
+        <div id="hint3" class="info-box amber"><strong>[PISTA]</strong> Observa con mucho detenimiento el operador lógico condicional empleado en la sección intermedia del bucle for (&lt;=).</div>
+        <div id="fb-q3" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q4" class="panel">
+      <div class="panel-title">Pregunta 4: Mecánica del Bucle For-Each</div>
+      <div class="question-box">
+        <p class="question-text">Analiza este bloque de código donde se intenta duplicar el valor de cada elemento dentro de un array:</p>
+        <div class="code-block"><span class="ty">int</span>[] valores = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>};
+<span class="kw">for</span> (<span class="ty">int</span> v : valores) {
+    v = v * <span class="num">2</span>;
+}</div>
+        <p class="question-text">¿Cuál será el estado del array <code>valores</code> después de que termine de ejecutarse este ciclo?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q4', 0, true, 'En un bucle for-each, la variable de iteración es una copia temporal del valor almacenado, no una referencia directa a la celda del array.', this)">
+            <div class="option-radio"></div><span>El array original permanecerá sin cambios: {1, 2, 3, 4}.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q4', 1, false, 'Modificar la variable de control de un for-each no altera el array de origen porque no se está asignando el valor mediante un índice de celda.', this)">
+            <div class="option-radio"></div><span>El array se modificará correctamente y su contenido será: {2, 4, 6, 8}.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q4', 2, false, 'Es completamente válido realizar cálculos matemáticos con las variables locales dentro de cualquier tipo de bucle.', this)">
+            <div class="option-radio"></div><span>El código producirá un error de compilación porque no se permite realizar operaciones matemáticas dentro del for-each.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q4', 3, false, 'No existe ninguna instrucción que asigne o restablezca el contenido del array original a valores nulos o vacíos.', this)">
+            <div class="option-radio"></div><span>Todos los elementos del array pasarán a valer cero: {0, 0, 0, 0}.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint4')">Ver Pista</button>
+        <div id="hint4" class="info-box amber"><strong>[PISTA]</strong> Recuerda que el bucle for-each está diseñado principalmente como un mecanismo de "solo lectura" sobre las colecciones y arrays.</div>
+        <div id="fb-q4" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q5" class="panel">
+      <div class="panel-title">Pregunta 5: Propiedades de Arrays Vacíos</div>
+      <div class="question-box">
+        <p class="question-text">Si ejecutamos la instrucción <code style="color:var(--teal-text)">System.out.println(notas.length);</code> en un array que fue declarado e inicializado como vacío mediante <code style="color:var(--purple-text)">int[] notas = new int[0];</code>, ¿cuál será la salida en la consola?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q5', 0, true, 'La propiedad .length reporta la capacidad asignada en la inicialización, la cual es cero en este escenario específico.', this)">
+            <div class="option-radio"></div><span>0</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q5', 1, false, 'El array ya fue instanciado en memoria con el operador new, por lo tanto, el objeto existe y su longitud no está vacía o nula.', this)">
+            <div class="option-radio"></div><span>null</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q5', 2, false, 'Esta excepción solo ocurriría si la variable \'notas\' no apuntara a ningún objeto en memoria (es decir, si fuera explícitamente igual a null).', this)">
+            <div class="option-radio"></div><span>Lanzará un error de puntero nulo (NullPointerException).</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q5', 3, false, 'La longitud de un array en programación nunca puede expresarse mediante valores numéricos negativos.', this)">
+            <div class="option-radio"></div><span>-1</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint5')">Ver Pista</button>
+        <div id="hint5" class="info-box amber"><strong>[PISTA]</strong> La propiedad .length devuelve el tamaño con el que fue construido el array, incluso si este se definió sin celdas útiles.</div>
+        <div id="fb-q5" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q6" class="panel">
+      <div class="panel-title">Pregunta 6: Inmutabilidad de la Estructura</div>
+      <div class="question-box">
+        <p class="question-text">Una vez que un array es creado en Java utilizando una sentencia como <code style="color:var(--purple-text)">int[] miArray = new int[5];</code>, ¿qué ocurre si el programa necesita expandir su capacidad para guardar un sexto elemento?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q6', 0, false, 'Los arrays nativos de Java no disponen de métodos dinámicos como .resize() ni permiten alterar su estructura original.', this)">
+            <div class="option-radio"></div><span>Se puede usar el método miArray.resize(6); para añadir dinámicamente un casillero.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q6', 1, true, 'Los arrays tradicionales se reservan de forma contigua en memoria con un tamaño inalterable desde su nacimiento.', this)">
+            <div class="option-radio"></div><span>El tamaño es completamente fijo e inmutable; para agregar más elementos se debe crear un nuevo array con mayor capacidad y copiar los datos anteriores.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q6', 2, false, 'Java no gestiona la redimensión automática de arrays primitivos; esa funcionalidad pertenece a clases avanzadas como ArrayList.', this)">
+            <div class="option-radio"></div><span>Java expande el tamaño de forma automática en el trasfondo cuando detecta que el índice supera la capacidad actual.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q6', 3, false, 'El espacio asignado al tipo de dato (por ejemplo, 4 bytes para enteros) es estricto y jamás se comprime.', this)">
+            <div class="option-radio"></div><span>El array reduce automáticamente el tamaño de los elementos existentes para hacer espacio al nuevo valor.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint6')">Ver Pista</button>
+        <div id="hint6" class="info-box amber"><strong>[PISTA]</strong> Considera una de las características fundamentales de los arrays tradicionales en comparación con colecciones dinámicas como las listas.</div>
+        <div id="fb-q6" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q7" class="panel">
+      <div class="panel-title">Pregunta 7: Inicialización por Defecto (Objetos)</div>
+      <div class="question-box">
+        <p class="question-text">Al crear un array de tipo objeto, por ejemplo <code style="color:var(--purple-text)">String[] palabras = new String[4];</code>, ¿con qué valor por defecto inicializa Java cada una de las celdas asignadas de forma automática?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q7', 0, false, 'Aunque es una cadena limpia, un texto vacío ya representa un objeto inicializado, lo cual Java no asume de oficio.', this)">
+            <div class="option-radio"></div><span>Una cadena de texto vacía "".</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q7', 1, true, 'Todos los arrays de tipos de datos por referencia (objetos, clases, envolturas) inicializan por defecto sus casillas apuntando a null.', this)">
+            <div class="option-radio"></div><span>null</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q7', 2, false, 'El valor literal de texto "null" es un String válido de cuatro letras, no la ausencia real de un objeto en memoria.', this)">
+            <div class="option-radio"></div><span>"null"</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q7', 3, false, 'Java provee valores predeterminados seguros para todas las celdas de un array al momento de su instanciación en memoria.', this)">
+            <div class="option-radio"></div><span>Un error de compilación obliga al desarrollador a rellenar el array de inmediato.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint7')">Ver Pista</button>
+        <div id="hint7" class="info-box amber"><strong>[PISTA]</strong> Piensa en el valor predeterminado que reciben las variables miembro de tipos por referencia (no primitivos) en el lenguaje Java.</div>
+        <div id="fb-q7" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q8" class="panel">
+      <div class="panel-title">Pregunta 8: Reasignación y Modificación</div>
+      <div class="question-box">
+        <p class="question-text">Si necesitas modificar los valores internos de un array de enteros sumándole una unidad a cada elemento, ¿cuál de las siguientes estructuras es la adecuada para lograrlo?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q8', 0, true, 'El acceso por índice mediante la sintaxis array[i] = ... modifica directamente los datos reales de la estructura en memoria.', this)">
+            <div class="option-radio"></div><span>Un bucle for tradicional utilizando variables de control basadas en índices para reasignar el contenido celda por celda.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q8', 1, false, 'Sin importar la dirección de lectura, el for-each lee copias de las variables y carece de mecanismos nativos de reasignación.', this)">
+            <div class="option-radio"></div><span>Un bucle for-each simplificado de tipo inverso.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q8', 2, false, 'Java no soporta operaciones aritméticas vectoriales de forma directa sobre la referencia general de un array primitivo.', this)">
+            <div class="option-radio"></div><span>La propiedad de escritura directa miArray.allElements() + 1.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q8', 3, false, 'El for-each fallará en la tarea de modificar el array original debido a su naturaleza de paso por valor en la iteración.', this)">
+            <div class="option-radio"></div><span>Cualquiera de las dos opciones anteriores funciona exactamente igual en términos de rendimiento y efectos.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint8')">Ver Pista</button>
+        <div id="hint8" class="info-box amber"><strong>[PISTA]</strong> Para guardar un dato nuevo dentro de un casillero físico, requieres apuntar directamente a su dirección o posición numérica exacta.</div>
+        <div id="fb-q8" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q9" class="panel">
+      <div class="panel-title">Pregunta 9: Indexación Compleja / Anidada</div>
+      <div class="question-box">
+        <p class="question-text">Considera la siguiente línea de código en Java:</p>
+        <div class="code-block"><span class="ty">int</span>[] muestra = {<span class="num">5</span>, <span class="num">4</span>, <span class="num">3</span>, <span class="num">2</span>, <span class="num">1</span>};</div>
+        <p class="question-text">¿Qué valor numérico específico se encuentra guardado en la posición apuntada por <code style="color:var(--amber-text)">muestra[muestra[3]]</code>?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q9', 0, false, 'Se debe resolver de adentro hacia afuera: el valor en muestra[3] es 2, por ende la expresión se convierte en evaluar muestra[2], cuyo valor real es 3.', this)">
+            <div class="option-radio"></div><span>2</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q9', 1, true, '¡Correcto! Al evaluar de adentro hacia afuera, muestra[3] es igual a 2. Luego, evaluamos muestra[2], lo cual nos posiciona en el tercer elemento cuyo valor es 3.', this)">
+            <div class="option-radio"></div><span>3</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q9', 2, false, 'Este resultado se obtendría si estuviéramos evaluando incorrectamente el índice de manera lineal o sin considerar la base cero.', this)">
+            <div class="option-radio"></div><span>4</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q9', 3, false, 'Es completamente válido usar el valor entero extraído de un array como el índice de búsqueda para otra operación de acceso.', this)">
+            <div class="option-radio"></div><span>Generará una excepción por intentar anidar corchetes en un array unidimensional.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint9')">Ver Pista</button>
+        <div id="hint9" class="info-box amber"><strong>[PISTA]</strong> Resuelve la expresión por partes, empezando por determinar el valor almacenado en los corchetes más internos y usando ese resultado como nuevo índice.</div>
+        <div id="fb-q9" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q10" class="panel">
+      <div class="panel-title">Pregunta 10: Inicialización por Defecto (Primitivos)</div>
+      <div class="question-box">
+        <p class="question-text">Al trabajar con tipos primitivos numéricos enteros, ¿con qué valor inicializa Java automáticamente las celdas de un array como <code style="color:var(--purple-text)">int[] contador = new int[10];</code>?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q10', 0, true, 'Los tipos numéricos primitivos (como int, short, byte) se limpian automáticamente asignándoles el valor cero en cada posición.', this)">
+            <div class="option-radio"></div><span>0</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q10', 1, false, 'El valor null aplica únicamente para objetos y referencias. Los datos primitivos no pueden almacenar estados nulos.', this)">
+            <div class="option-radio"></div><span>null</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q10', 2, false, 'A diferencia de otros lenguajes como C o C++, Java garantiza la limpieza predictiva e inicialización de la memoria asignada.', this)">
+            <div class="option-radio"></div><span>Valores basura aleatorios según la memoria disponible.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q10', 3, false, 'El valor de inicio por defecto es el elemento neutro de la adición, es decir, el cero absoluto.', this)">
+            <div class="option-radio"></div><span>-1</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint10')">Ver Pista</button>
+        <div id="hint10" class="info-box amber"><strong>[PISTA]</strong> Java previene comportamientos impredecibles asignando un valor numérico seguro y neutral a las variables de naturaleza primitiva.</div>
+        <div id="fb-q10" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q11" class="panel">
+      <div class="panel-title">Reto Avanzado 11: Inversión de Memoria (In-Place)</div>
+      <div class="question-box">
+        <p class="question-text">Analiza el siguiente método diseñado para invertir el orden de un array sin crear un segundo array auxiliar (optimización de espacio $O(1)$):</p>
+        <div class="code-block"><span class="kw">public static void</span> <span class="ty">invertir</span>(<span class="ty">int</span>[] arr) {
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt; arr.length / <span class="num">2</span>; i++) {
+        <span class="ty">int</span> temp = arr[i];
+        arr[i] = arr[arr.length - <span class="num">1</span> - i];
+        arr[arr.length - <span class="num">1</span> - i] = temp;
+    }
+}</div>
+        <p class="question-text">Si le pasamos el array `{5, 9, 3, 7, 2}`, ¿qué pasaría si cambiáramos la condición del ciclo a solo <code class="hl">i &lt; arr.length</code>?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q11', 0, false, 'Si recorres el array completo, los elementos se invierten en la primera mitad y se vuelven a invertir en la segunda, regresando a su estado original.', this)">
+            <div class="option-radio"></div><span>El array se invertiría dos veces más rápido debido al doble de iteraciones.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q11', 1, true, '¡Exacto! Al llegar a la mitad, el algoritmo empieza a deshacer los cambios que ya hizo. Al terminar todo el ciclo, el array queda exactamente igual que al principio.', this)">
+            <div class="option-radio"></div><span>El array terminaría en su estado original: {5, 9, 3, 7, 2}.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q11', 2, false, 'El límite superior de la ecuación indexada utiliza variables correctas (-1 -i), por lo que nunca excederá los límites físicos de las celdas.', this)">
+            <div class="option-radio"></div><span>El código lanzará un ArrayIndexOutOfBoundsException a la mitad del recorrido.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q11', 3, false, 'La variable intermedia \'temp\' resguarda el valor de forma segura en cada iteración, no hay pérdida de datos por sobreescritura pura.', this)">
+            <div class="option-radio"></div><span>El array se llenaría con copias del elemento central: {3, 3, 3, 3, 3}.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint11')">Ver Pista</button>
+        <div id="hint11" class="info-box amber"><strong>[PISTA]</strong> Simula el comportamiento del código paso a paso para i = 0 e i = 4 en un papel y observa qué pasa con las posiciones físicas del extremo izquierdo y derecho.</div>
+        <div id="fb-q11" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q12" class="panel">
+      <div class="panel-title">Reto Avanzado 12: Técnica de Dos Punteros (Two-Pointers)</div>
+      <div class="question-box">
+        <p class="question-text">Tenemos un algoritmo optimizado que busca si existen dos números en un array <strong>ordenado</strong> que sumen un valor `target` específico:</p>
+        <div class="code-block"><span class="ty">int</span>[] nums = {<span class="num">2</span>, <span class="num">5</span>, <span class="num">8</span>, <span class="num">12</span>, <span class="num">19</span>};
+<span class="ty">int</span> target = <span class="num">20</span>;
+<span class="ty">int</span> izq = <span class="num">0</span>, der = nums.length - <span class="num">1</span>;
+
+<span class="kw">while</span> (izq &lt; der) {
+    <span class="ty">int</span> suma = nums[izq] + nums[der];
+    <span class="kw">if</span> (suma == target) <span class="kw">break</span>;
+    <span class="kw">if</span> (suma &lt; target) izq++;
+    <span class="kw">else</span> der--;
+}</div>
+        <p class="question-text">¿Cuáles serán los valores finales de las variables de control `izq` y `der` tras finalizar la ejecución de este bloque?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q12', 0, false, 'Suma inicial (2+19 = 21). Como 21 > 20, der decrece a 3. Siguiente suma (2+12 = 14)... realiza la traza completa.', this)">
+            <div class="option-radio"></div><span>izq = 0, der = 4</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q12', 1, true, '¡Correcto! Iteración 1: 2+19=21 (der--). Iteración 2: 2+12=14 (izq++). Iteración 3: 5+12=17 (izq++). Iteración 4: 8+12=20 (¡Match encontrado!). El ciclo se rompe con izq=2 y der=3.', this)">
+            <div class="option-radio"></div><span>izq = 2, der = 3</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q12', 2, false, 'Si las variables se cruzaran o igualaran, significaría que no se halló solución, pero la combinación (8 + 12 = 20) sí existe.', this)">
+            <div class="option-radio"></div><span>izq = 3, der = 2</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q12', 3, false, 'Revisa las condiciones del menor/mayor. Cuando la suma es menor al target, el puntero izquierdo avanza para buscar números más altos.', this)">
+            <div class="option-radio"></div><span>izq = 1, der = 2</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint12')">Ver Pista</button>
+        <div id="hint12" class="info-box amber"><strong>[PISTA]</strong> Al estar ordenado, si la suma actual es mayor que el target, la única forma de reducir el resultado es mover el puntero derecho hacia abajo (der--).</div>
+        <div id="fb-q12" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q13" class="panel">
+      <div class="panel-title">Reto Avanzado 13: Desplazamiento Cíclico (Rotación)</div>
+      <div class="question-box">
+        <p class="question-text">Se requiere rotar los elementos de un array un casillero hacia la **derecha**, haciendo que el último elemento pase a ser el primero. Analiza este intento de implementación:</p>
+        <div class="code-block"><span class="ty">int</span>[] items = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>};
+<span class="ty">int</span> ultimo = items[items.length - <span class="num">1</span>];
+
+<span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt; items.length - <span class="num">1</span>; i++) {
+    items[i + <span class="num">1</span>] = items[i];
+}
+items[<span class="num">0</span>] = ultimo;</div>
+        <p class="question-text">¿Qué error de lógica severo presenta este código?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q13', 0, false, 'El valor del último elemento fue guardado correctamente en la variable externa antes de iniciar el ciclo.', this)">
+            <div class="option-radio"></div><span>El último elemento original se pierde porque se sobreescribe antes de guardarlo.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q13', 1, false, 'El bucle se ejecuta para i = 0, 1, 2. El índice máximo evaluado en la asignación es i+1 (3), lo cual es perfectamente válido.', this)">
+            <div class="option-radio"></div><span>Provoca un ArrayIndexOutOfBoundsException en la última iteración del bucle.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q13', 2, true, '¡Brillante! Como el ciclo avanza hacia adelante, en la primera iteración el 10 copia su valor en la posición del 20. En la siguiente iteración, esa celda ya vale 10, propagando el mismo número en cascada.', this)">
+            <div class="option-radio"></div><span>El primer elemento "propaga" su valor destruyendo los datos siguientes; el resultado final será {40, 10, 10, 10}.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q13', 3, false, 'El código compila sin restricciones semánticas; es un defecto netamente algorítmico y matemático.', this)">
+            <div class="option-radio"></div><span>Produce un bucle infinito porque la longitud dinámica del array se altera.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint13')">Ver Pista</button>
+        <div id="hint13" class="info-box amber"><strong>[PISTA]</strong> Si ejecutas el código en orden, cuando i = 0, items[1] pasa a valer 10. Cuando i = 1, evalúas items[2] = items[1]. ¿Cuánto valía items[1] en ese instante? Para solucionar esto, el recorrido debería hacerse de atrás hacia adelante.</div>
+        <div id="fb-q13" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q14" class="panel">
+      <div class="panel-title">Reto Avanzado 14: Algoritmos de Frecuencias Histograma</div>
+      <div class="question-box">
+        <p class="question-text">Disponemos de un array con valores numéricos entre 0 y 4. Queremos contar cuántas veces se repite cada número usando un **array de frecuencias**. Observa la sintaxis:</p>
+        <div class="code-block"><span class="ty">int</span>[] datos = {<span class="num">2</span>, <span class="num">4</span>, <span class="num">2</span>, <span class="num">0</span>, <span class="num">2</span>, <span class="num">4</span>};
+<span class="ty">int</span>[] frec = <span class="kw">new</span> <span class="ty">int</span>[<span class="num">5</span>];
+
+<span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt; datos.length; i++) {
+    <span class="hl">frec[datos[i]]++;</span>
+}</div>
+        <p class="question-text">¿Qué técnica fundamental de arrays demuestra la línea resaltada en azul?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q14', 0, true, '¡Correcto! El valor almacenado en un casillero del primer array se extrae y se pasa inmediatamente como el índice del segundo array, eliminando la necesidad de hacer bucles anidados innecesarios.', this)">
+            <div class="option-radio"></div><span>Uso del valor de un elemento como índice directo de acceso para otro array.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q14', 1, false, 'No hay ninguna matriz o arreglo multidimensional involucrado en la línea; son dos estructuras lineales e independientes.', this)">
+            <div class="option-radio"></div><span>La creación de una referencia multidimensional en tiempo de ejecución.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q14', 2, false, 'El operador ++ incrementa el contenido numérico guardado dentro de la casilla del array de frecuencias, no la dirección de memoria.', this)">
+            <div class="option-radio"></div><span>Un incremento ilegal de punteros contiguos de memoria de solo lectura.</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q14', 3, false, 'Si el array datos tuviera un número como 5 o mayor, lanzaría error. El código asume que los valores de entrada están controlados en el rango de índices de frec.', this)">
+            <div class="option-radio"></div><span>Una sintaxis alternativa exclusiva de Java para clonar arrays.</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint14')">Ver Pista</button>
+        <div id="hint14" class="info-box amber"><strong>[PISTA]</strong> En la primera vuelta i = 0, datos[0] vale 2. Por lo tanto, la línea se traduce en ejecutar internamente: frec[2]++;.</div>
+        <div id="fb-q14" class="info-box"></div>
+      </div>
+    </div>
+
+    <div id="q15" class="panel">
+      <div class="panel-title">Reto Avanzado 15: Traza de Ordenamiento (Bubble Sort)</div>
+      <div class="question-box">
+        <p class="question-text">Se ejecuta la **primera pasada completa** (el ciclo más externo completo, desde $j=0$ hasta terminar su primera ronda) del algoritmo de ordenamiento de burbuja clásico sobre este array desordenado:</p>
+        <div class="code-block"><span class="ty">int</span>[] n = {<span class="num">5</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">2</span>, <span class="num">8</span>};</div>
+        <p class="question-text">¿Cómo quedan posicionados los elementos del array tras completarse únicamente esa primera iteración global?</p>
+        <div class="options-list">
+          <div class="option-card" onclick="checkAnswer('q15', 0, false, 'Este sería el resultado final del ordenamiento total del array. La pregunta pide el estado intermedio exacto tras la primera vuelta.', this)">
+            <div class="option-radio"></div><span>{1, 2, 4, 5, 8}</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q15', 1, true, '¡Impresionante nivel lógico! En la primera burbuja, el 5 es mayor que 1 y se intercambian. Luego el 5 se compara con 4 (cambio), con 2 (cambio) y finalmente con 8. Como 5 no es mayor que 8, se queda ahí. El número mayor (8) ha \"flotado\" con éxito hasta el extremo final.', this)">
+            <div class="option-radio"></div><span>{1, 4, 2, 5, 8}</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q15', 2, false, 'El algoritmo de burbuja compara elementos adyacentes uno a uno. No selecciona el mínimo absoluto para ponerlo al principio (ese sería el Selection Sort).', this)">
+            <div class="option-radio"></div><span>{1, 5, 4, 2, 8}</span>
+          </div>
+          <div class="option-card" onclick="checkAnswer('q15', 3, false, 'Evalúa con cuidado las transiciones: [5,1]->[1,5]. Luego [5,4]->[4,5], quedando {1,4,5,2,8}. Sigue arrastrando el número mayor paso a paso.', this)">
+            <div class="option-radio"></div><span>{1, 4, 5, 2, 8}</span>
+          </div>
+        </div>
+        <button class="btn" onclick="toggleHint('hint15')">Ver Pista</button>
+        <div id="hint15" class="info-box amber"><strong>[PISTA]</strong> Recuerda el principio de la burbuja: compara parejas consecutivas (n[i] > n[i+1]) de izquierda a derecha. El elemento más pesado siempre es empujado hasta el final del array en la primera ronda.</div>
+        <div id="fb-q15" class="info-box"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Cambiar de panel dinámicamente
+  function show(panelId, element) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    
+    document.getElementById(panelId).classList.add('active');
+    element.classList.add('active');
+  }
+
+  // Alternar visibilidad de las pistas
+  function toggleHint(hintId) {
+    const hintBox = document.getElementById(hintId);
+    hintBox.style.display = (hintBox.style.display === 'block') ? 'none' : 'block';
+  }
+
+  // Lógica de validación evaluativa interactiva
+  function checkAnswer(questionId, optionIndex, isCorrect, rationale, element) {
+    const parentContainer = element.parentElement;
+    
+    // Validar si la pregunta ya fue respondida para bloquear re-intentos
+    if (parentContainer.classList.contains('evaluated')) return;
+    parentContainer.classList.add('evaluated');
+
+    const options = parentContainer.querySelectorAll('.option-card');
+    options.forEach((opt, idx) => {
+      if (idx === optionIndex) {
+        opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+      } else {
+        opt.style.opacity = '0.4';
+      }
+    });
+
+    const feedbackBox = document.getElementById(`fb-${questionId}`);
+    feedbackBox.style.display = 'block';
+    if (isCorrect) {
+      feedbackBox.className = "info-box green";
+      feedbackBox.innerHTML = `<strong>[CORRECTO]</strong> ${rationale}`;
+    } else {
+      feedbackBox.className = "info-box red";
+      feedbackBox.innerHTML = `<strong>[INCORRECTO]</strong> ${rationale}`;
+    }
+  }
+</script>
+</body>
+</html>

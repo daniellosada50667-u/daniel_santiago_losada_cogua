@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introducción Práctica: Arrays en Java</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --bg4: #21262d;
+    --border: #30363d;
+    --border2: #3d444d;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --blue: #388bfd;
+    --blue-bg: #1f3358;
+    --blue-text: #79c0ff;
+    --amber: #d29922;
+    --amber-bg: #341a00;
+    --amber-text: #e3b341;
+    --green: #3fb950;
+    --green-bg: #1a2d1a;
+    --green-text: #7ee787;
+    --red: #f85149;
+    --red-bg: #300a0a;
+    --red-text: #ffa198;
+    --purple: #a371f7;
+    --purple-text: #d2a8ff;
+    --teal-text: #39d3d3;
+    --font-code: 'JetBrains Mono', monospace;
+    --font-ui: 'Syne', sans-serif;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-badge {
+    background: var(--blue-bg);
+    color: var(--blue-text);
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--blue);
+    letter-spacing: .05em;
+  }
+  .header-title {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 24px;
+  }
+
+  .main-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.03em;
+  }
+
+  .intro-p {
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .highlight-word {
+    color: var(--blue-text);
+    font-weight: 600;
+  }
+
+  /* CARD SECTIONS */
+  .section-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-num {
+    font-family: var(--font-code);
+    font-size: 12px;
+    background: var(--blue-bg);
+    color: var(--blue-text);
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--blue);
+  }
+
+  .section-p {
+    font-size: 14.5px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-family: var(--font-code);
+    font-size: 13.5px;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--text);
+    margin-top: 12px;
+    white-space: pre;
+  }
+  .code-block .kw  { color: #ff7b72; }
+  .code-block .ty  { color: var(--teal-text); }
+  .code-block .num { color: var(--amber-text); }
+  .code-block .str { color: var(--green-text); }
+  .code-block .cm  { color: var(--muted); font-style: italic; }
+
+  /* ARRAY VISUALIZER */
+  .array-viz {
+    margin-top: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+  }
+  .array-viz-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .array-viz-label {
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .array-viz-name {
+    font-family: var(--font-code);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal-text);
+  }
+  .array-viz-size {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg4);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .array-cells {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+  }
+  .array-cell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    min-width: 64px;
+  }
+  .cell-value {
+    width: 100%;
+    padding: 14px 8px;
+    border: 2px solid var(--border2);
+    border-right-width: 1px;
+    background: var(--bg3);
+    font-family: var(--font-code);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--amber-text);
+    text-align: center;
+  }
+  .array-cell:first-child .cell-value { border-radius: var(--radius) 0 0 var(--radius); border-left-width: 2px; }
+  .array-cell:last-child  .cell-value { border-radius: 0 var(--radius) var(--radius) 0; border-right-width: 2px; }
+  .array-cell.hl .cell-value {
+    background: var(--blue-bg);
+    border-color: var(--blue);
+    color: var(--blue-text);
+  }
+  .array-cell.hl .cell-index { color: var(--blue-text); }
+  .cell-index {
+    margin-top: 8px;
+    font-family: var(--font-code);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .cell-index .bracket { color: var(--border2); }
+  .cell-index .idx-num { color: var(--purple-text); }
+  .array-viz-arrow {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-code);
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .viz-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-family: var(--font-code);
+  }
+  .viz-note.blue {
+    background: var(--blue-bg);
+    color: var(--blue-text);
+    border: 1px solid rgba(56,139,253,.3);
+  }
+  .viz-note.amber {
+    background: var(--amber-bg);
+    color: var(--amber-text);
+    border: 1px solid rgba(210,153,34,.3);
+  }
+  .viz-note.green {
+    background: var(--green-bg);
+    color: var(--green-text);
+    border: 1px solid rgba(63,185,80,.3);
+  }
+  .viz-note.red {
+    background: var(--red-bg);
+    color: var(--red-text);
+    border: 1px solid rgba(248,81,73,.3);
+  }
+
+  /* CONSOLE OUTPUT */
+  .console-out {
+    margin-top: 20px;
+    background: #090d12;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .console-header {
+    background: var(--bg4);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .05em;
+  }
+  .con-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .con-dot.r { background: #f85149; }
+  .con-dot.a { background: #d29922; }
+  .con-dot.g { background: #3fb950; }
+  .console-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .console-line {
+    font-family: var(--font-code);
+    font-size: 13px;
+    color: var(--green-text);
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .console-line .con-prompt {
+    color: var(--muted);
+    font-size: 12px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .console-line .con-label {
+    color: var(--muted);
+    margin-right: 6px;
+  }
+  .console-line .con-val { color: var(--blue-text); }
+
+  /* GHOST CELL — índice inválido */
+  .array-cell.ghost .cell-value {
+    background: var(--red-bg);
+    border: 2px dashed var(--red);
+    color: var(--red-text);
+    opacity: 0.75;
+    font-size: 14px;
+    letter-spacing: .02em;
+  }
+  .array-cell.ghost .cell-index .idx-num { color: var(--red-text); }
+  .array-cell.ghost .cell-value::after {
+    content: '';
+  }
+  .array-sep {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    color: var(--border2);
+    font-family: var(--font-code);
+    font-size: 20px;
+    align-self: center;
+    padding-bottom: 28px;
+  }
+
+  /* CALLOUT BOXES */
+  .callout {
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    border-left: 4px solid;
+    margin-top: 16px;
+    font-size: 14px;
+  }
+  .callout.red { background: var(--red-bg); border-color: var(--red); color: var(--red-text); }
+  .callout.amber { background: var(--amber-bg); border-color: var(--amber); color: var(--amber-text); }
+
+  /* RULES GRID */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .rule-item {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .rule-item strong {
+    color: var(--purple-text);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+  .rule-item p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* INTERACTIVE STEP VISUALIZER */
+  .step-viz {
+    margin-top: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .step-toolbar {
+    background: var(--bg4);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .step-toolbar-title {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .step-counter {
+    font-family: var(--font-code);
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .step-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-code);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+    white-space: nowrap;
+  }
+  .step-btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue-text); }
+  .step-btn:disabled { opacity: 0.3; cursor: default; }
+  .step-btn.next-btn { background: var(--blue-bg); border-color: var(--blue); color: var(--blue-text); }
+  .step-btn.next-btn:hover:not(:disabled) { background: var(--blue); color: #fff; }
+  .step-body { padding: 20px 24px; }
+  .step-desc {
+    font-family: var(--font-code);
+    font-size: 13px;
+    line-height: 1.6;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    min-height: 46px;
+  }
+  .step-desc.green { border-left-color: var(--green); }
+  .step-desc.amber { border-left-color: var(--amber); }
+  .step-desc.red   { border-left-color: var(--red);   }
+  .vars-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .var-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-family: var(--font-code);
+    font-size: 13px;
+  }
+  .var-chip.flash { background: var(--green-bg); border-color: var(--green); }
+  .vn  { color: var(--teal-text); }
+  .veq { color: var(--muted); margin: 0 2px; }
+  .vv  { color: var(--amber-text); font-weight: 700; }
+  .var-chip.flash .vv { color: var(--green-text); }
+  .array-cell.c-current .cell-value { background: #2a1e00 !important; border-color: var(--amber) !important; color: var(--amber-text) !important; }
+  .array-cell.c-max     .cell-value { background: var(--green-bg) !important; border-color: var(--green) !important; color: var(--green-text) !important; }
+  .array-cell.c-min     .cell-value { background: #1e1030 !important; border-color: var(--purple) !important; color: var(--purple-text) !important; }
+  .array-cell.c-left    .cell-value { background: #0d2020 !important; border-color: var(--teal-text) !important; color: var(--teal-text) !important; }
+  .array-cell.c-right   .cell-value { background: #200d30 !important; border-color: var(--purple) !important; color: var(--purple-text) !important; }
+  .array-cell.c-done    .cell-value { background: var(--green-bg) !important; border-color: var(--green) !important; color: var(--green-text) !important; }
+  .array-cell.c-dup     .cell-value { background: var(--red-bg) !important; border-color: var(--red) !important; color: var(--red-text) !important; }
+  .array-cell.c-cmp     .cell-value { background: var(--amber-bg) !important; border-color: var(--amber) !important; color: var(--amber-text) !important; }
+  .cell-ptr {
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    min-height: 17px;
+    text-align: center;
+    width: 100%;
+  }
+  .cell-ptr.teal   { color: var(--teal-text); }
+  .cell-ptr.purple { color: var(--purple-text); }
+  .cell-ptr.amber  { color: var(--amber-text); }
+  .dup-log {
+    margin-top: 20px;
+    background: #090d12;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .dup-log-hdr {
+    background: var(--bg4);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .dup-log-body {
+    padding: 12px 16px;
+    min-height: 42px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .dup-log-line {
+    font-family: var(--font-code);
+    font-size: 13px;
+    display: flex;
+    gap: 8px;
+  }
+  .dl-p { color: var(--muted); }
+  .dl-t { color: var(--muted); }
+  .dl-v { color: var(--red-text); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-badge">DOCUMENTACIÓN</span>
+  <span class="header-title">Fundamentos de Programación en Java</span>
+</header>
+
+<div class="container">
+  <h1 class="main-title">Primeros Pasos con Arrays (Arreglos)</h1>
+  <p class="intro-p">Para iniciar con el tema de <span class="highlight-word">Arrays en Java</span>, lo más fácil es imaginar un array como una <strong>caja de casilleros numerados</strong> donde cada casillero guarda un único dato, y todos los casilleros deben pertenecer estrictamente al mismo tipo de dato.</p>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">1</span> Declarar e Inicializar (Saber el tamaño de antemano)
+    </div>
+    <p class="section-p">Si sabes cuántos casilleros necesitas pero aún no tienes los datos listos, los creas definiendo su capacidad. Java los rellenará automáticamente con ceros (`0`) si son de tipo numérico.</p>
+    
+    <div class="code-block"><span class="kw">public class</span> <span class="ty">EstructuraBasica</span> {
+    <span class="kw">public static void</span> <span class="ty">main</span>(String[] args) {
+        <span class="cm">// Creamos un array de enteros con espacio para 4 elementos</span>
+        <span class="ty">int</span>[] edades = <span class="kw">new</span> <span class="ty">int</span>[<span class="num">4</span>];
+
+        <span class="cm">// Guardamos datos en cada casillero usando su ÍNDICE (coordenada)</span>
+        <span class="cm">// ¡Recuerda que el primer casillero siempre es el 0!</span>
+        edades[<span class="num">0</span>] = <span class="num">15</span>; <span class="cm">// Primer casillero</span>
+        edades[<span class="num">1</span>] = <span class="num">20</span>; <span class="cm">// Segundo casillero</span>
+        edades[<span class="num">2</span>] = <span class="num">18</span>; <span class="cm">// Tercer casillero</span>
+        edades[<span class="num">3</span>] = <span class="num">25</span>; <span class="cm">// Cuarto casillero (Último)</span>
+
+        <span class="cm">// Acceder y mostrar un dato específico</span>
+        System.out.println(<span class="str">"La edad en el segundo casillero es: "</span> + edades[<span class="num">1</span>]);
+    }
+}</div>
+
+    <div class="array-viz">
+      <div class="array-viz-header">
+        <span class="array-viz-label">Resultado en memoria</span>
+        <span class="array-viz-name">edades</span>
+        <span class="array-viz-size">length = 4</span>
+      </div>
+      <div class="array-cells">
+        <div class="array-cell">
+          <div class="cell-value">15</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">0</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell hl">
+          <div class="cell-value">20</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">1</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">18</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">2</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">25</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">3</span><span class="bracket">]</span></div>
+        </div>
+      </div>
+      <div class="array-viz-arrow">
+        <span class="viz-note blue">edades[1] = 20 &rarr; es el que imprime el println</span>
+        <span class="viz-note amber">edades[0] = primer casillero (base cero)</span>
+        <span class="viz-note green">edades[3] = ultimo casillero (length - 1)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">2</span> Inicialización Directa (Con datos listos)
+    </div>
+    <p class="section-p">Si ya conoces de antemano los valores que van a ir dentro del array, puedes declararlo y rellenarlo todo en una sola línea usando llaves <code style="color:var(--purple-text)">{}</code> sin usar la palabra clave <code class="kw">new</code>.</p>
+    
+    <div class="code-block"><span class="kw">public class</span> <span class="ty">ArrayDirecto</span> {
+    <span class="kw">public static void</span> <span class="ty">main</span>(String[] args) {
+        <span class="cm">// Declaración rápida con datos predefinidos</span>
+        String[] nombres = {<span class="str">"Ana"</span>, <span class="str">"Juan"</span>, <span class="str">"Pedro"</span>};
+
+        <span class="cm">// Saber el tamaño total del array con la propiedad .length</span>
+        System.out.println(<span class="str">"Cantidad de personas: "</span> + nombres.length); 
+
+        <span class="cm">// Mostrar el primer elemento</span>
+        System.out.println(<span class="str">"Primer nombre: "</span> + nombres[<span class="num">0</span>]);
+    }
+}</div>
+
+    <div class="array-viz">
+      <div class="array-viz-header">
+        <span class="array-viz-label">Resultado en memoria</span>
+        <span class="array-viz-name">nombres</span>
+        <span class="array-viz-size">length = 3</span>
+      </div>
+      <div class="array-cells">
+        <div class="array-cell hl">
+          <div class="cell-value">"Ana"</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">0</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">"Juan"</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">1</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">"Pedro"</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">2</span><span class="bracket">]</span></div>
+        </div>
+      </div>
+      <div class="array-viz-arrow">
+        <span class="viz-note blue">nombres[0] &rarr; "Ana" (primer nombre impreso)</span>
+        <span class="viz-note green">nombres.length &rarr; 3</span>
+        <span class="viz-note amber">nombres[2] = ultimo casillero (length - 1)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">3</span> Recorrer un Array con un Bucle for Tradicional
+    </div>
+    <p class="section-p">Para no escribir <code class="kw">System.out.println</code> por cada casillero de forma manual, usamos un ciclo <code class="kw">for</code> que use una variable contadora (<code style="color:var(--amber-text)">i</code>) para moverse automáticamente por los índices desde el <code class="num">0</code> hasta el final.</p>
+    
+    <div class="code-block"><span class="kw">public class</span> <span class="ty">RecorrerArray</span> {
+    <span class="kw">public static void</span> <span class="ty">main</span>(String[] args) {
+        <span class="ty">int</span>[] notas = {<span class="num">90</span>, <span class="num">85</span>, <span class="num">78</span>, <span class="num">95</span>, <span class="num">100</span>};
+
+        System.out.println(<span class="str">"--- Lista de Notas ---"</span>);
+        <span class="cm">// i empieza en 0 y va aumentando mientras sea menor al tamaño del array</span>
+        <span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt; notas.length; i++) {
+            System.out.println(<span class="str">"Índice "</span> + i + <span class="str">" -> Nota: "</span> + notas[i]);
+        }
+    }
+}</div>
+
+    <div class="array-viz">
+      <div class="array-viz-header">
+        <span class="array-viz-label">Array en memoria</span>
+        <span class="array-viz-name">notas</span>
+        <span class="array-viz-size">length = 5</span>
+      </div>
+      <div class="array-cells">
+        <div class="array-cell">
+          <div class="cell-value">90</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">0</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">85</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">1</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">78</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">2</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">95</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">3</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">100</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">4</span><span class="bracket">]</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="console-out">
+      <div class="console-header">
+        <span class="con-dot r"></span>
+        <span class="con-dot a"></span>
+        <span class="con-dot g"></span>
+        <span style="margin-left:6px">Salida por consola — System.out.println</span>
+      </div>
+      <div class="console-body">
+        <div class="console-line"><span class="con-prompt">&gt;</span><span class="con-label">Índice 0 -&gt; Nota:</span><span class="con-val">90</span></div>
+        <div class="console-line"><span class="con-prompt">&gt;</span><span class="con-label">Índice 1 -&gt; Nota:</span><span class="con-val">85</span></div>
+        <div class="console-line"><span class="con-prompt">&gt;</span><span class="con-label">Índice 2 -&gt; Nota:</span><span class="con-val">78</span></div>
+        <div class="console-line"><span class="con-prompt">&gt;</span><span class="con-label">Índice 3 -&gt; Nota:</span><span class="con-val">95</span></div>
+        <div class="console-line"><span class="con-prompt">&gt;</span><span class="con-label">Índice 4 -&gt; Nota:</span><span class="con-val">100</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">4</span> El "Error Clásico" que debes evitar
+    </div>
+    <p class="section-p">Cuando se empieza a programar con arrays, el error más común es intentar acceder o escribir en un casillero que no existe en la memoria física asignada.</p>
+    
+    <div class="code-block"><span class="kw">public class</span> <span class="ty">ErrorComun</span> {
+    <span class="kw">public static void</span> <span class="ty">main</span>(String[] args) {
+        <span class="ty">int</span>[] numeros = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>}; <span class="cm">// Índices válidos: 0, 1 y 2</span>
+        
+        <span class="cm">// ERROR: El tamaño es 3, pero el índice máximo es 2.</span>
+        <span class="cm">// La siguiente línea romperá el programa en tiempo de ejecución:</span>
+        System.out.println(numeros[<span class="num">3</span>]); 
+    }
+}</div>
+
+    <div class="array-viz">
+      <div class="array-viz-header">
+        <span class="array-viz-label">Array en memoria</span>
+        <span class="array-viz-name">numeros</span>
+        <span class="array-viz-size">length = 3</span>
+      </div>
+      <div class="array-cells">
+        <div class="array-cell">
+          <div class="cell-value">10</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">0</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">20</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">1</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-cell">
+          <div class="cell-value">30</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">2</span><span class="bracket">]</span></div>
+        </div>
+        <div class="array-sep">|</div>
+        <div class="array-cell ghost">
+          <div class="cell-value">NO EXISTE</div>
+          <div class="cell-index"><span class="bracket">[</span><span class="idx-num">3</span><span class="bracket">]</span></div>
+        </div>
+      </div>
+      <div class="array-viz-arrow">
+        <span class="viz-note green">Índices válidos: [0], [1], [2]</span>
+        <span class="viz-note red">numeros[3] &rarr; fuera del rango &rarr; EXCEPCIÓN</span>
+      </div>
+    </div>
+
+    <div class="callout red">
+      <strong>[EXCEPCIÓN CRÍTICA]</strong> Ejecutar la línea de arriba lanzará un error llamado <code>ArrayIndexOutOfBoundsException</code>, lo que detendrá inmediatamente el programa del estudiante.
+    </div>
+  </div>
+
+  <div class="section-card" style="border-color: var(--amber);">
+    <div class="section-title" style="color: var(--amber-text);">
+      ⚠️ Tres Reglas de Oro para Memorizar
+    </div>
+    <div class="rules-grid">
+      <div class="rule-item">
+        <strong>Base Cero</strong>
+        <p>El conteo de posiciones de los casilleros en memoria empieza siempre en 0, no en 1.</p>
+      </div>
+      <div class="rule-item">
+        <strong>Tamaño Fijo</strong>
+        <p>Una vez que defines que un array mide 4, no puedes agrandarlo a 5 en mitad de la ejecución.</p>
+      </div>
+      <div class="rule-item">
+        <strong>Último Índice</strong>
+        <p>La última posición disponible de un array siempre se encuentra en (longitud - 1).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">5</span> Buscar el Valor Máximo y Mínimo
+    </div>
+    <p class="section-p">Recorrer el array una sola vez comparando cada elemento contra una variable de registro es el patrón fundamental. La clave: inicializar con <code style="color:var(--teal-text)">numeros[0]</code>, nunca con <code style="color:var(--amber-text)">0</code>. Si todos los valores del array fueran negativos, partir de 0 daría un resultado incorrecto.</p>
+
+    <div class="code-block"><span class="kw">public class</span> <span class="ty">BuscarMaxMin</span> {
+    <span class="kw">public static void</span> <span class="ty">main</span>(String[] args) {
+        <span class="ty">int</span>[] numeros = {<span class="num">34</span>, <span class="num">7</span>, <span class="num">23</span>, <span class="num">32</span>, <span class="num">5</span>, <span class="num">62</span>};
+
+        <span class="ty">int</span> max = numeros[<span class="num">0</span>]; <span class="cm">// punto de partida: primer elemento</span>
+        <span class="ty">int</span> min = numeros[<span class="num">0</span>];
+
+        <span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">1</span>; i &lt; numeros.length; i++) {
+            <span class="kw">if</span> (numeros[i] &gt; max) max = numeros[i];
+            <span class="kw">if</span> (numeros[i] &lt; min) min = numeros[i];
+        }
+        System.out.println(<span class="str">"Máximo: "</span> + max); <span class="cm">// 62</span>
+        System.out.println(<span class="str">"Mínimo: "</span> + min); <span class="cm">// 5</span>
+    }
+}</div>
+
+    <div class="step-viz">
+      <div class="step-toolbar">
+        <span class="step-toolbar-title">Traza paso a paso &mdash; {34, 7, 23, 32, 5, 62}</span>
+        <span class="step-counter" id="mm-counter"></span>
+        <button class="step-btn" id="mm-prev">&#8592; Anterior</button>
+        <button class="step-btn next-btn" id="mm-next">Siguiente &#8594;</button>
+      </div>
+      <div class="step-body">
+        <div class="step-desc" id="mm-desc"></div>
+        <div class="vars-row" id="mm-vars"></div>
+        <div class="array-cells" id="mm-cells"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">6</span> Invertir un Array (Técnica In-Place)
+    </div>
+    <p class="section-p">Dos punteros avanzan desde los extremos hacia el centro intercambiando elementos. Solo se necesita una variable <code style="color:var(--teal-text)">temp</code> para no perder datos al sobrescribir. El bucle trabaja exactamente <code style="color:var(--amber-text)">length / 2</code> veces, sin tocar el elemento central en arrays de longitud impar.</p>
+
+    <div class="code-block"><span class="kw">public class</span> <span class="ty">InvertirArray</span> {
+    <span class="kw">public static void</span> <span class="ty">main</span>(String[] args) {
+        <span class="ty">int</span>[] arr = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>};
+        <span class="ty">int</span> izq = <span class="num">0</span>;
+        <span class="ty">int</span> der = arr.length - <span class="num">1</span>;
+
+        <span class="kw">while</span> (izq &lt; der) {
+            <span class="ty">int</span> temp = arr[izq]; <span class="cm">// guardar antes de sobrescribir</span>
+            arr[izq]  = arr[der];
+            arr[der]  = temp;
+            izq++;
+            der--;
+        }
+        <span class="cm">// resultado: {5, 4, 3, 2, 1}</span>
+    }
+}</div>
+
+    <div class="callout amber">
+      <strong>[TRAMPA CLÁSICA]</strong> Si el ciclo recorriera el array completo (sin que <code>izq</code> y <code>der</code> se crucen), los elementos se invertirían dos veces y el array regresaría a su estado original.
+    </div>
+
+    <div class="step-viz">
+      <div class="step-toolbar">
+        <span class="step-toolbar-title">Traza paso a paso &mdash; {1, 2, 3, 4, 5}</span>
+        <span class="step-counter" id="inv-counter"></span>
+        <button class="step-btn" id="inv-prev">&#8592; Anterior</button>
+        <button class="step-btn next-btn" id="inv-next">Siguiente &#8594;</button>
+      </div>
+      <div class="step-body">
+        <div class="step-desc" id="inv-desc"></div>
+        <div class="vars-row" id="inv-vars"></div>
+        <div class="array-cells" id="inv-cells"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">7</span> Detectar Duplicados (Doble Bucle)
+    </div>
+    <p class="section-p">Cada elemento se compara contra todos los que vienen <strong>después</strong> de él. El bucle interno arranca en <code style="color:var(--amber-text)">i + 1</code> por dos razones: evitar comparar un elemento consigo mismo y evitar reportar el mismo duplicado dos veces.</p>
+
+    <div class="code-block"><span class="kw">public class</span> <span class="ty">DetectarDuplicados</span> {
+    <span class="kw">public static void</span> <span class="ty">main</span>(String[] args) {
+        <span class="ty">int</span>[] datos = {<span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>, <span class="num">5</span>, <span class="num">3</span>, <span class="num">8</span>};
+
+        <span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt; datos.length; i++) {
+            <span class="kw">for</span> (<span class="ty">int</span> j = i + <span class="num">1</span>; j &lt; datos.length; j++) {
+                <span class="kw">if</span> (datos[i] == datos[j]) {
+                    System.out.println(<span class="str">"Duplicado: "</span> + datos[i]);
+                }
+            }
+        }
+    }
+}</div>
+
+    <div class="step-viz">
+      <div class="step-toolbar">
+        <span class="step-toolbar-title">Traza paso a paso &mdash; {2, 3, 2, 5, 3, 8}</span>
+        <span class="step-counter" id="dup-counter"></span>
+        <button class="step-btn" id="dup-prev">&#8592; Anterior</button>
+        <button class="step-btn next-btn" id="dup-next">Siguiente &#8594;</button>
+      </div>
+      <div class="step-body">
+        <div class="step-desc" id="dup-desc"></div>
+        <div class="vars-row" id="dup-vars"></div>
+        <div class="array-cells" id="dup-cells"></div>
+        <div class="dup-log" id="dup-log-box" style="display:none">
+          <div class="dup-log-hdr">
+            <span class="con-dot r"></span>
+            <span class="con-dot a"></span>
+            <span class="con-dot g"></span>
+            <span style="margin-left:6px">Salida por consola</span>
+          </div>
+          <div class="dup-log-body" id="dup-log-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ============================================================
+  // MOTOR GENÉRICO DE TRAZAS
+  // ============================================================
+  function buildCells(containerId, step) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = '';
+    step.arr.forEach((val, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'array-cell ' + (step.classes[i] || '');
+
+      const ptr = document.createElement('div');
+      const pInfo = step.ptrs[i];
+      ptr.className = 'cell-ptr ' + (pInfo ? pInfo.cls : '');
+      ptr.textContent = pInfo ? pInfo.text : '';
+
+      const v = document.createElement('div');
+      v.className = 'cell-value';
+      v.textContent = val;
+
+      const idx = document.createElement('div');
+      idx.className = 'cell-index';
+      idx.innerHTML = '<span class="bracket">[</span><span class="idx-num">' + i + '</span><span class="bracket">]</span>';
+
+      cell.appendChild(ptr);
+      cell.appendChild(v);
+      cell.appendChild(idx);
+      c.appendChild(cell);
+    });
+  }
+
+  function buildVars(containerId, step) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = '';
+    step.vars.forEach(vr => {
+      const chip = document.createElement('div');
+      chip.className = 'var-chip' + (step.updated.includes(vr.n) ? ' flash' : '');
+      chip.innerHTML = '<span class="vn">' + vr.n + '</span><span class="veq"> = </span><span class="vv">' + vr.v + '</span>';
+      c.appendChild(chip);
+    });
+  }
+
+  function initStepper(cfg) {
+    const { steps, ids, renderExtra } = cfg;
+    let cur = 0;
+    const desc    = document.getElementById(ids.desc);
+    const counter = document.getElementById(ids.counter);
+    const prevBtn = document.getElementById(ids.prev);
+    const nextBtn = document.getElementById(ids.next);
+
+    function render() {
+      const s = steps[cur];
+      desc.textContent    = s.desc;
+      desc.className      = 'step-desc ' + (s.color || '');
+      counter.textContent = 'Paso ' + (cur + 1) + ' / ' + steps.length;
+      prevBtn.disabled    = cur === 0;
+      nextBtn.textContent = cur === steps.length - 1 ? '&#8635; Reiniciar' : 'Siguiente &#8594;';
+      buildCells(ids.cells, s);
+      buildVars(ids.vars, s);
+      if (renderExtra) renderExtra(s);
+    }
+
+    prevBtn.addEventListener('click', () => { if (cur > 0) { cur--; render(); } });
+    nextBtn.addEventListener('click', () => {
+      cur = cur < steps.length - 1 ? cur + 1 : 0;
+      render();
+    });
+    render();
+  }
+
+  // ============================================================
+  // TRAZA 1: MÁXIMO Y MÍNIMO
+  // ============================================================
+  initStepper({
+    ids: { desc:'mm-desc', counter:'mm-counter', prev:'mm-prev', next:'mm-next', cells:'mm-cells', vars:'mm-vars' },
+    steps: [
+      {
+        desc: 'Iniciamos: max = numeros[0] = 34  y  min = numeros[0] = 34. El bucle arranca en i = 1.',
+        color: '',
+        arr: [34, 7, 23, 32, 5, 62],
+        classes: ['c-left','','','','',''],
+        ptrs: [{text:'max=min',cls:'teal'},null,null,null,null,null],
+        vars: [{n:'max',v:34},{n:'min',v:34},{n:'i',v:'-'}],
+        updated: []
+      },
+      {
+        desc: 'i=1 → numeros[1]=7.  ¿7 > 34 (max)? NO.  ¿7 < 34 (min)? SÍ → min actualiza a 7.',
+        color: 'amber',
+        arr: [34, 7, 23, 32, 5, 62],
+        classes: ['','c-current','','','',''],
+        ptrs: [null,{text:'i=1',cls:'amber'},null,null,null,null],
+        vars: [{n:'max',v:34},{n:'min',v:7},{n:'i',v:1}],
+        updated: ['min']
+      },
+      {
+        desc: 'i=2 → numeros[2]=23.  ¿23 > 34? NO.  ¿23 < 7? NO.  Sin cambios.',
+        color: '',
+        arr: [34, 7, 23, 32, 5, 62],
+        classes: ['','','c-current','','',''],
+        ptrs: [null,null,{text:'i=2',cls:'amber'},null,null,null],
+        vars: [{n:'max',v:34},{n:'min',v:7},{n:'i',v:2}],
+        updated: []
+      },
+      {
+        desc: 'i=3 → numeros[3]=32.  ¿32 > 34? NO.  ¿32 < 7? NO.  Sin cambios.',
+        color: '',
+        arr: [34, 7, 23, 32, 5, 62],
+        classes: ['','','','c-current','',''],
+        ptrs: [null,null,null,{text:'i=3',cls:'amber'},null,null],
+        vars: [{n:'max',v:34},{n:'min',v:7},{n:'i',v:3}],
+        updated: []
+      },
+      {
+        desc: 'i=4 → numeros[4]=5.  ¿5 > 34? NO.  ¿5 < 7 (min)? SÍ → min actualiza a 5.',
+        color: 'amber',
+        arr: [34, 7, 23, 32, 5, 62],
+        classes: ['','','','','c-current',''],
+        ptrs: [null,null,null,null,{text:'i=4',cls:'amber'},null],
+        vars: [{n:'max',v:34},{n:'min',v:5},{n:'i',v:4}],
+        updated: ['min']
+      },
+      {
+        desc: 'i=5 → numeros[5]=62.  ¿62 > 34 (max)? SÍ → max actualiza a 62.  ¿62 < 5? NO.',
+        color: 'amber',
+        arr: [34, 7, 23, 32, 5, 62],
+        classes: ['','','','','','c-current'],
+        ptrs: [null,null,null,null,null,{text:'i=5',cls:'amber'}],
+        vars: [{n:'max',v:62},{n:'min',v:5},{n:'i',v:5}],
+        updated: ['max']
+      },
+      {
+        desc: 'Recorrido completo. Máximo = 62 (índice 5)  —  Mínimo = 5 (índice 4).',
+        color: 'green',
+        arr: [34, 7, 23, 32, 5, 62],
+        classes: ['','','','','c-min','c-max'],
+        ptrs: [null,null,null,null,{text:'MIN',cls:'purple'},{text:'MAX',cls:'teal'}],
+        vars: [{n:'max',v:62},{n:'min',v:5}],
+        updated: []
+      }
+    ]
+  });
+
+  // ============================================================
+  // TRAZA 2: INVERTIR
+  // ============================================================
+  initStepper({
+    ids: { desc:'inv-desc', counter:'inv-counter', prev:'inv-prev', next:'inv-next', cells:'inv-cells', vars:'inv-vars' },
+    steps: [
+      {
+        desc: 'Estado inicial. izq=0 apunta al extremo izquierdo. der=4 apunta al extremo derecho. Mientras izq < der → intercambiamos.',
+        color: '',
+        arr: [1,2,3,4,5],
+        classes: ['c-left','','','','c-right'],
+        ptrs: [{text:'izq',cls:'teal'},null,null,null,{text:'der',cls:'purple'}],
+        vars: [{n:'izq',v:0},{n:'der',v:4}],
+        updated: []
+      },
+      {
+        desc: 'INTERCAMBIO 1: temp=arr[0]=1. arr[0]=arr[4]=5. arr[4]=temp=1. Array: {5,2,3,4,1}.',
+        color: 'amber',
+        arr: [5,2,3,4,1],
+        classes: ['c-done','','','','c-done'],
+        ptrs: [{text:'izq',cls:'teal'},null,null,null,{text:'der',cls:'purple'}],
+        vars: [{n:'izq',v:0},{n:'der',v:4}],
+        updated: []
+      },
+      {
+        desc: 'izq++ → 1.  der-- → 3.  ¿1 < 3? SÍ → continuamos con el siguiente par.',
+        color: '',
+        arr: [5,2,3,4,1],
+        classes: ['c-done','c-left','','c-right','c-done'],
+        ptrs: [null,{text:'izq',cls:'teal'},null,{text:'der',cls:'purple'},null],
+        vars: [{n:'izq',v:1},{n:'der',v:3}],
+        updated: ['izq','der']
+      },
+      {
+        desc: 'INTERCAMBIO 2: temp=arr[1]=2. arr[1]=arr[3]=4. arr[3]=temp=2. Array: {5,4,3,2,1}.',
+        color: 'amber',
+        arr: [5,4,3,2,1],
+        classes: ['c-done','c-done','','c-done','c-done'],
+        ptrs: [null,{text:'izq',cls:'teal'},null,{text:'der',cls:'purple'},null],
+        vars: [{n:'izq',v:1},{n:'der',v:3}],
+        updated: []
+      },
+      {
+        desc: 'izq++ → 2.  der-- → 2.  ¿2 < 2? NO → el bucle termina. El centro (3) nunca se toca.',
+        color: 'green',
+        arr: [5,4,3,2,1],
+        classes: ['c-done','c-done','c-done','c-done','c-done'],
+        ptrs: [null,null,{text:'izq=der',cls:'teal'},null,null],
+        vars: [{n:'izq',v:2},{n:'der',v:2}],
+        updated: ['izq','der']
+      }
+    ]
+  });
+
+  // ============================================================
+  // TRAZA 3: DUPLICADOS
+  // ============================================================
+  function renderDupLog(step) {
+    const box  = document.getElementById('dup-log-box');
+    const body = document.getElementById('dup-log-body');
+    if (!step.log || step.log.length === 0) {
+      box.style.display = 'none';
+    } else {
+      box.style.display = 'block';
+      body.innerHTML = step.log.map(line => {
+        const m = line.match(/^(.+?): (.+)$/);
+        return m
+          ? '<div class="dup-log-line"><span class="dl-p">&gt;</span><span class="dl-t">' + m[1] + ':</span><span class="dl-v">' + m[2] + '</span></div>'
+          : '<div class="dup-log-line"><span class="dl-p">&gt;</span><span class="dl-t">' + line + '</span></div>';
+      }).join('');
+    }
+  }
+
+  initStepper({
+    ids: { desc:'dup-desc', counter:'dup-counter', prev:'dup-prev', next:'dup-next', cells:'dup-cells', vars:'dup-vars' },
+    renderExtra: renderDupLog,
+    steps: [
+      {
+        desc: 'Array: {2,3,2,5,3,8}. El bucle externo fija i. El interno compara con todos los j > i.',
+        color: '',
+        arr: [2,3,2,5,3,8],
+        classes: ['','','','','',''],
+        ptrs: [null,null,null,null,null,null],
+        vars: [{n:'i',v:'-'},{n:'j',v:'-'}],
+        updated: [],
+        log: []
+      },
+      {
+        desc: 'i=0 (val=2), j=1 (val=3).  ¿datos[0] == datos[1]?  2 == 3?  NO.',
+        color: '',
+        arr: [2,3,2,5,3,8],
+        classes: ['c-cmp','c-cmp','','','',''],
+        ptrs: [{text:'i=0',cls:'amber'},{text:'j=1',cls:'purple'},null,null,null,null],
+        vars: [{n:'i',v:0},{n:'j',v:1}],
+        updated: [],
+        log: []
+      },
+      {
+        desc: 'i=0 (val=2), j=2 (val=2).  ¿datos[0] == datos[2]?  2 == 2?  SÍ → println("Duplicado: 2")',
+        color: 'red',
+        arr: [2,3,2,5,3,8],
+        classes: ['c-dup','','c-dup','','',''],
+        ptrs: [{text:'i=0',cls:'amber'},null,{text:'j=2',cls:'purple'},null,null,null],
+        vars: [{n:'i',v:0},{n:'j',v:2}],
+        updated: [],
+        log: ['Duplicado: 2']
+      },
+      {
+        desc: 'i=0 sigue: j=3(5)≠2, j=4(3)≠2, j=5(8)≠2. Ningún otro duplicado del 2.',
+        color: '',
+        arr: [2,3,2,5,3,8],
+        classes: ['c-cmp','','','c-cmp','c-cmp','c-cmp'],
+        ptrs: [{text:'i=0',cls:'amber'},null,null,null,null,null],
+        vars: [{n:'i',v:0},{n:'j',v:'3→5'}],
+        updated: [],
+        log: ['Duplicado: 2']
+      },
+      {
+        desc: 'i=1 (val=3), j=2 (val=2).  ¿datos[1] == datos[2]?  3 == 2?  NO.',
+        color: '',
+        arr: [2,3,2,5,3,8],
+        classes: ['','c-cmp','c-cmp','','',''],
+        ptrs: [null,{text:'i=1',cls:'amber'},{text:'j=2',cls:'purple'},null,null,null],
+        vars: [{n:'i',v:1},{n:'j',v:2}],
+        updated: [],
+        log: ['Duplicado: 2']
+      },
+      {
+        desc: 'i=1 (val=3), j=4 (val=3).  ¿datos[1] == datos[4]?  3 == 3?  SÍ → println("Duplicado: 3")',
+        color: 'red',
+        arr: [2,3,2,5,3,8],
+        classes: ['','c-dup','','','c-dup',''],
+        ptrs: [null,{text:'i=1',cls:'amber'},null,null,{text:'j=4',cls:'purple'},null],
+        vars: [{n:'i',v:1},{n:'j',v:4}],
+        updated: [],
+        log: ['Duplicado: 2','Duplicado: 3']
+      },
+      {
+        desc: 'i avanza a 2, 3, 4 sin nuevos duplicados. Recorrido completo. Se encontraron: 2 y 3.',
+        color: 'green',
+        arr: [2,3,2,5,3,8],
+        classes: ['c-dup','','c-dup','','c-dup',''],
+        ptrs: [null,null,null,null,null,null],
+        vars: [{n:'i',v:'FIN'},{n:'j',v:'FIN'}],
+        updated: [],
+        log: ['Duplicado: 2','Duplicado: 3']
+      }
+    ]
+  });
+</script>
+
+</body>
+</html>
