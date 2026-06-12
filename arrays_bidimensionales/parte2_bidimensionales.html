@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejercicios Prácticos: Arrays Bidimensionales en Java</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --bg4: #21262d;
+    --border: #30363d;
+    --border2: #3d444d;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --blue: #388bfd;
+    --blue-bg: #1f3358;
+    --blue-text: #79c0ff;
+    --amber: #d29922;
+    --amber-bg: #341a00;
+    --amber-text: #e3b341;
+    --green: #3fb950;
+    --green-bg: #1a2d1a;
+    --green-text: #7ee787;
+    --purple: #a371f7;
+    --purple-text: #d2a8ff;
+    --teal-text: #39d3d3;
+    --font-code: 'JetBrains Mono', monospace;
+    --font-ui: 'Syne', sans-serif;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-badge {
+    background: var(--amber-bg);
+    color: var(--amber-text);
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--amber);
+    letter-spacing: .05em;
+  }
+  .header-title {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 24px;
+  }
+
+  .main-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.03em;
+  }
+
+  .intro-p {
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  /* CARD SECTIONS */
+  .section-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .section-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-num {
+    font-family: var(--font-code);
+    font-size: 12px;
+    background: var(--bg4);
+    color: var(--text);
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border2);
+  }
+
+  .badge-difficulty {
+    font-family: var(--font-code);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+  .badge-difficulty.easy { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green); }
+  .badge-difficulty.medium { background: var(--amber-bg); color: var(--amber-text); border: 1px solid var(--amber); }
+
+  .section-p {
+    font-size: 14.5px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-family: var(--font-code);
+    font-size: 13.5px;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--text);
+    margin-top: 12px;
+    white-space: pre;
+  }
+  .code-block .kw  { color: #ff7b72; }
+  .code-block .ty  { color: var(--teal-text); }
+  .code-block .num { color: var(--amber-text); }
+  .code-block .str { color: var(--green-text); }
+  .code-block .cm  { color: var(--muted); font-style: italic; }
+
+  /* INTERACTIVE SOLUTION ACCORDION */
+  .solution-area {
+    margin-top: 18px;
+  }
+  
+  .btn-solucion {
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-code);
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all .15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn-solucion:hover {
+    border-color: var(--blue);
+    color: var(--blue-text);
+    background: var(--blue-bg);
+  }
+
+  .solucion-content {
+    display: none;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border2);
+  }
+  
+  .solucion-content.show {
+    display: block;
+  }
+
+  .explicacion-box {
+    background: var(--bg2);
+    border-left: 4px solid var(--purple);
+    padding: 12px 16px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text);
+    margin-bottom: 12px;
+    font-family: var(--font-code);
+  }
+  
+  .explicacion-box strong {
+    color: var(--purple-text);
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-badge">AUTOEVALUACIÓN</span>
+  <span class="header-title">Laboratorio Práctico de Matrices</span>
+</header>
+
+<div class="container">
+  <h1 class="main-title">Ejercicios de Consolidación</h1>
+  <p class="intro-p">Ponga a prueba la comprensión de algoritmos multidimensionales analizando los siguientes enunciados. Intente resolverlos mentalmente o en su entorno de desarrollo antes de expandir la solución técnica.</p>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">1</span> Sumatoria de Elementos
+      <span class="badge-difficulty easy">FÁCIL</span>
+    </div>
+    <p class="section-p">Desarrolle un algoritmo que recorra una matriz de enteros previamente inicializada y calcule la suma total de todos los valores almacenados en su interior.</p>
+    
+    <div class="solution-area">
+      <button class="btn-solucion" onclick="toggleSolution(this)">Mostrar Solución Código Java</button>
+      <div class="solucion-content">
+        <div class="explicacion-box">
+          <strong>Estrategia:</strong> Se declara una variable acumuladora fuera de los bucles. El ciclo anidado visita cada celda posicional sumando su contenido directamente al acumulador.
+        </div>
+        <div class="code-block"><span class="ty">int</span>[][] matriz = {
+    {<span class="num">4</span>, <span class="num">8</span>},
+    {<span class="num">3</span>, <span class="num">7</span>}
+};
+
+<span class="ty">int</span> sumaTotal = <span class="num">0</span>;
+
+<span class="kw">for</span> (<span class="ty">int</span> f = <span class="num">0</span>; f &lt; matriz.length; f++) {
+    <span class="kw">for</span> (<span class="ty">int</span> c = <span class="num">0</span>; c &lt; matriz[f].length; c++) {
+        sumaTotal += matriz[f][c];
+    }
+}
+System.out.println(<span class="str">"Suma: "</span> + sumaTotal); <span class="cm">// Salida: 22</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">2</span> Extracción de la Diagonal Principal
+      <span class="badge-difficulty easy">FÁCIL</span>
+    </div>
+    <p class="section-p">En una matriz cuadrada (donde el número de filas es igual al número de columnas), la diagonal principal está compuesta por las celdas donde el índice de la fila coincide exactamente con el de la columna. Escriba el código para imprimir estos valores.</p>
+    
+    <div class="solution-area">
+      <button class="btn-solucion" onclick="toggleSolution(this)">Mostrar Solución Código Java</button>
+      <div class="solucion-content">
+        <div class="explicacion-box">
+          <strong>Optimización:</strong> En lugar de usar dos bucles y un condicional que filtre cuando <code style="color:var(--teal-text)">f == c</code>, es computacionalmente más eficiente utilizar un único bucle que acceda directamente a la coordenada idéntica de manera lineal.
+        </div>
+        <div class="code-block"><span class="ty">int</span>[][] cuadrada = {
+    {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>},
+    {<span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>},
+    {<span class="num">70</span>, <span class="num">80</span>, <span class="num">90</span>}
+};
+
+<span class="cm">// Recorrido optimizado con un único puntero de índice</span>
+<span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt; cuadrada.length; i++) {
+    System.out.print(cuadrada[i][i] + <span class="str">" "</span>); <span class="cm">// Imprime: 10 50 90</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">3</span> Conteo de Elementos Condicionales
+      <span class="badge-difficulty medium">MEDIO</span>
+    </div>
+    <p class="section-p">Diseñe un programa que examine una matriz de datos numéricos y determine cuántos de esos elementos corresponden a números pares y cuántos a números impares.</p>
+    
+    <div class="solution-area">
+      <button class="btn-solucion" onclick="toggleSolution(this)">Mostrar Solución Código Java</button>
+      <div class="solucion-content">
+        <div class="explicacion-box">
+          <strong>Estrategia:</strong> Dentro del bucle interno se aplica el operador de residuo aritmético o módulo <code style="color:var(--amber-text)">% 2 == 0</code> para discriminar la naturaleza del valor e incrementar el contador respectivo.
+        </div>
+        <div class="code-block"><span class="ty">int</span>[][] numeros = {
+    {<span class="num">5</span>, <span class="num">12</span>, <span class="num">7</span>},
+    {<span class="num">18</span>, <span class="num">3</span>, <span class="num">14</span>}
+};
+
+<span class="ty">int</span> pares = <span class="num">0</span>;
+<span class="ty">int</span> impares = <span class="num">0</span>;
+
+<span class="kw">for</span> (<span class="ty">int</span> f = <span class="num">0</span>; f &lt; numeros.length; f++) {
+    <span class="kw">for</span> (<span class="ty">int</span> c = <span class="num">0</span>; c &lt; numeros[f].length; c++) {
+        <span class="kw">if</span> (numeros[f][c] % <span class="num">2</span> == <span class="num">0</span>) {
+            pares++;
+        } <span class="kw">else</span> {
+            impares++;
+        }
+    }
+}
+System.out.println(<span class="str">"Pares: "</span> + pares + <span class="str">" | Impares: "</span> + impares);</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">4</span> Suma por Filas Independientes
+      <span class="badge-difficulty medium">MEDIO</span>
+    </div>
+    <p class="section-p">Construya un script que procese una matriz y calcule la sumatoria de sus elementos de manera aislada para cada fila, imprimiendo el resultado parcial al terminar de procesar cada una de ellas.</p>
+    
+    <div class="solution-area">
+      <button class="btn-solucion" onclick="toggleSolution(this)">Mostrar Solución Código Java</button>
+      <div class="solucion-content">
+        <div class="explicacion-box">
+          <strong>Punto Clave:</strong> La variable encargada de acumular la suma de la fila debe ser declarada e inicializada en <code style="color:var(--amber-text)">0</code> **dentro** del primer bucle y justo **antes** de iniciar el bucle de las columnas. Esto garantiza su reinicio en cada salto de fila.
+        </div>
+        <div class="code-block"><span class="ty">int</span>[][] tabla = {
+    {<span class="num">1</span>, <span class="num">1</span>, <span class="num">1</span>}, <span class="cm">// Fila 0</span>
+    {<span class="num">5</span>, <span class="num">5</span>, <span class="num">5</span>}  <span class="cm">// Fila 1</span>
+};
+
+<span class="kw">for</span> (<span class="ty">int</span> f = <span class="num">0</span>; f &lt; tabla.length; f++) {
+    <span class="ty">int</span> sumaFila = <span class="num">0</span>; <span class="cm">// Se reinicia al cambiar de fila</span>
+    
+    <span class="kw">for</span> (<span class="ty">int</span> c = <span class="num">0</span>; c &lt; tabla[f].length; c++) {
+        sumaFila += tabla[f][c];
+    }
+    System.out.println(<span class="str">"Suma de la fila "</span> + f + <span class="str": "</span> + sumaFila);
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">
+      <span class="section-num">5</span> Matriz Transpuesta (Intercambio de Ejes)
+      <span class="badge-difficulty medium">MEDIO</span>
+    </div>
+    <p class="section-p">Dada una matriz original de dimensiones M x N, genere una nueva matriz de dimensiones N x M cuyos elementos correspondan al intercambio de las filas por las columnas de la estructura original (Transposición).</p>
+    
+    <div class="solution-area">
+      <button class="btn-solucion" onclick="toggleSolution(this)">Mostrar Solución Código Java</button>
+      <div class="solucion-content">
+        <div class="explicacion-box">
+          <strong>Estrategia:</strong> Si la matriz original mide 2x3, la transpuesta se instancia con dimensiones de 3x2. Al realizar la asignación, la coordenada de destino invierte sus variables de control: <code style="color:var(--teal-text)">transpuesta[c][f] = original[f][c]</code>.
+        </div>
+        <div class="code-block"><span class="ty">int</span>[][] original = {
+    {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>},
+    {<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>}
+};
+
+<span class="ty">int</span> filas = original.length;
+<span class="ty">int</span> columnas = original[<span class="num">0</span>].length;
+
+<span class="cm">// Declaración con las dimensiones invertidas (3 filas, 2 columnas)</span>
+<span class="ty">int</span>[][] transpuesta = <span class="kw">new</span> <span class="ty">int</span>[columnas][filas];
+
+<span class="kw">for</span> (<span class="ty">int</span> f = <span class="num">0</span>; f &lt; filas; f++) {
+    <span class="kw">for</span> (<span class="ty">int</span> c = <span class="num">0</span>; c &lt; columnas; c++) {
+        <span class="cm">// Inversión posicional de índices</span>
+        transpuesta[c][f] = original[f][c];
+    }
+}</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleSolution(button) {
+    const content = button.nextElementSibling;
+    content.classList.toggle('show');
+    
+    if (content.classList.contains('show')) {
+      button.innerText = 'Ocultar Solución Código Java';
+    } else {
+      button.innerText = 'Mostrar Solución Código Java';
+    }
+  }
+</script>
+
+</body>
+</html>
